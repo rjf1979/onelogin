@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Entities\DeployVersion.cs" />
+    <Compile Remove="Entities\SiteSetting.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.82" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OneLogin.Core\OneLogin.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,108 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+<form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">项目</label>
+        <div class="layui-input-inline" style="width: 280px;">
+            <input type="text" name="SearchKey" autocomplete="off" class="layui-input" placeholder="搜索输入名称">
+        </div>
+        <button type="submit" class="layui-btn layui-btn-normal" lay-submit lay-filter="data-search-btn"><i class="layui-icon layui-icon-search"></i>搜索</button>
+    </div>
+</form>
+<table id="data-table" class="layui-hide" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+
+
+@section Scripts
+{
+    <!-- 操作列 -->
+    <script type="text/html" id="opt">
+        <button class="layui-btn layui-btn-warm layui-btn-xs" lay-event="edit">编辑</button>
+        <button class="layui-btn layui-btn-normal layui-btn-xs" lay-event="addSetting">＋配置</button>
+    </script>
+    <script>
+        var table;
+
+        layui.use(['table', 'form'],
+            function() {
+                table = layui.table;
+                var form = layui.form;
+                
+                //监听操作
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        var layEvent = obj.event;
+
+                        if (layEvent === 'edit') {
+                            layerOpen({
+                                type: 2,
+                                title: '编辑',
+                                area: ['480px', '380px'],
+                                content: ['/settings/Environment/edit?id=' + data.ID, 'yes']
+                            });
+                        }
+
+                        if (layEvent === 'addSetting') {
+                            layerOpen({
+                                type: 2,
+                                title: data.ProjectName + ' > ' + data.EnvironmentName + ' > ' + data.VersionNumber + ' > 添加配置',
+                                area: ['70%', '90%'],
+                                content: ['/settings/settingsData/edit?projectId=' + data.ProjectID + '&environmentId=' + data.ID, 'yes']
+                            });
+                        }
+                    });
+
+                //搜索
+                form.on('submit(data-search-btn)',
+                    function(data) {
+                        searchData(data.field.SearchKey);
+                        return false;
+                    });
+
+                //加载
+                loadData();
+            });
+
+        function add() {
+            layerOpen({
+                type: 2,
+                title: '添加',
+                area: ['480px', '380px'],
+                content: ['/settings/Environment/edit', 'yes']
+            });
+        }
+
+        function searchData(searchKey) {
+            table.reload('data-table',
+                {
+                    where: {
+                        searchKey: searchKey,
+                        userid:Request.QueryString('userid')
+                    }
+                });
+        }
+        
+        // 渲染表格
+        function loadData() {
+            tableRender({
+                elem: '#data-table',
+                url: '/settings/Environment/List',
+                defaultToolbar: [],
+                height:'full-100',
+                page: true,
+                limit:15,
+                cols: [
+                    [
+                        { field: 'ID', width: 100, title: 'ID' },
+                        { field: 'ProjectName', width: 180, title: '项目名称' },
+                        { field: 'EnvironmentName', width: 180, title: '环境名称' },
+                        { field: 'EnvironmentCode', width: 180, title: '环境编码' },
+                        { field: 'CreateTime', width: 200, title: '创建时间' },
+                        { align: 'left', width: 180, title: '操作', templet: '#opt' }
+                    ]
+                ]
+            });
+        }
+    </script>
+}

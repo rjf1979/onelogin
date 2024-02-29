@@ -1,0 +1,244 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+<form class="layui-form layui-form-pane" action="" >
+    <input type="hidden" value="" name="ProductCataID" />
+    <input type="hidden" value="" name="ProviderID" />
+    <input type="hidden" value="" name="BrandID" />
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">搜索</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input layui-input-inline" name="SearchBillNo" placeholder="模糊搜索单号..." />
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">支付状态</label>
+            <div class="layui-input-inline">
+                <select name="PayStatus">
+                    <option value="">全部</option>
+                    <option value="5">待下单</option>
+                    <option value="10">待支付</option>
+                    <option value="20">支付成功</option>
+                    <option value="30">支付失败</option>
+                    <option value="40">支付异常</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button type="submit" class="layui-btn layui-btn-normal" lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</button>
+        </div>
+    </div>
+</form>
+<table id="data-table" class="layui-table" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+@section Scripts
+{
+    <!-- 操作列 -->
+    <script type="text/html" id="opt">
+        {{# if (d.PayStatus==20){ }}
+        @*<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="refund">退款</a>*@
+        {{# } }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="view">查看</a>
+    </script>
+
+    <script id="IsWebPubTpl" type="text/html">
+        <input type="checkbox" name="IsWebPub" value="{{d.ProductID}}" lay-skin="switch" lay-text="上架|下架" lay-filter="IsWebPub" {{ d.IsWebPub=='1' ? 'checked' : '' }}>
+    </script>
+
+    <script>
+        var table;
+
+        layui.use(['table', 'form'],
+            function() {
+                var $ = layui.jquery;
+                var form = layui.form;
+                table = layui.table;
+
+                //
+                loadData();
+
+                ////状态监听操作
+                //form.on('switch(IsWebPub)',
+                //    function(obj) {
+                //        var isPub = true;
+                //        if (!obj.elem.checked) {
+                //            isPub = false;
+                //        }
+                //        showLoader();
+                //        var url = "/product/product/SwitchIsWebPub?id=" + this.value + '&value=' + isPub;
+                //        axios.get(url).then(function(response) {
+                //            if (response.status === 200) {
+                //                var result = response.data;
+                //                if (result.IsError) {
+                //                    msgFail(msg);
+                //                } else {
+                //                    closeLoader();
+                //                }
+                //            }
+                //        });
+                //    });
+
+                form.on("submit(data-search-btn)",
+                    function(data) {
+                        let payStatus = parseInt(data.field.PayStatus == "" ? 0 : data.field.PayStatus);
+                        table.reload('data-table',
+                            {
+                                where: {
+                                    SearchBillNo: data.field.SearchBillNo,
+                                    PayStatus: payStatus
+                                }
+                            });
+                        return false;
+                    });
+
+                //操作事件
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        console.log(data);
+                        var layEvent = obj.event;
+
+                        if (layEvent == "refund") {
+                            layerOpen({
+                                type: 2,
+                                title: '编辑',
+                                area: ['850px', '95%'],
+                                content: ['/flowdata/payment/refund?payRequestNo=' + data.PayRequestId, 'yes']
+                            });
+                        }
+
+                        if (layEvent == "view") {
+                            layerOpen({
+                                type: 2,
+                                title: '查看',
+                                area: ['800px', '95%'],
+                                content: ['/flowdata/payment/ViewInfo?payRequestNo=' + data.PayRequestId + '&eventTime=' + data.EventTime, 'yes']
+                            });
+                        }
+
+                    });
+            }
+        );
+
+        // 渲染表格
+        function loadData() {
+            tableRender({
+                elem: '#data-table',
+                page: true,
+                limit: 15,
+                limits: [15, 20, 30, 40.50],
+                url: '/flowdata/payment/list',
+                cols: [
+                    [
+                        { field: 'PayRequestId', width: 180, title: '支付流水号', fixed: 'left' },
+                        { field: 'TransactionId', width: 180, title: '支付平台交易ID' },
+                        {
+                            field: 'PayPlatform',
+                            width: 95,
+                            title: '支付平台',
+                            templet: function(d) {
+                                if (d.PayPlatform == 1) {
+                                    return "微信支付";
+                                }
+                                if (d.PayPlatform == 2) {
+                                    return "支付宝";
+                                }
+                                if (d.PayPlatform == 3) {
+                                    return "贝宝支付";
+                                }
+                            }
+                        },
+                        { field: 'PayStatusInfo', width: 90, align: 'center', title: '支付状态' },
+                        { field: 'PayType', width: 90, align: 'center', title: '支付场景' },
+                        {
+                            field: 'IsTransactionClosed',
+                            width: 95,
+                            align: 'center',
+                            title: '交易关闭',
+                            templet: function(d) {
+                                if (d.IsTransactionClosed) {
+                                    return "关闭";
+                                }
+                                return "有效";
+                            }
+                        },
+                        {
+                            field: 'CNY_TotalPayAmount',
+                            width: 100,
+                            title: '人民币金额',
+                            templet: function(d) { return formatMoney(d.CNY_TotalPayAmount); }
+                        },
+                        { field: 'CurrencyType', width: 95, align: 'center', title: '货币类型' },
+                        {
+                            field: 'CurrencyPayAmount',
+                            width: 100,
+                            title: '支付金额',
+                            templet: function(d) {
+                                if (d.CurrencyType == "CNY") {
+                                    return formatMoney(d.CurrencyPayAmount);
+                                }
+                                if (d.CurrencyType == "USD") {
+                                    return formatMoney(d.CurrencyPayAmount, "$");
+                                }
+                            }
+                        },
+                        { field: 'CurrencyPayRate', width: 80, title: '汇率' },
+                        {
+                            field: 'CreateTime',
+                            width: 160,
+                            title: '流水时间',
+                            templet: function(d) {
+                                return formatDate(d.CreateTime, "yyyy-MM-dd hh:mm:ss");
+                            }
+                        },
+                        {
+                            field: 'EventTime',
+                            width: 110,
+                            title: '事件时间',
+                            templet: function(d) {
+                                return formatDate(d.EventTime);
+                            }
+                        },
+                        { templet: '#opt', width: 110, align: 'center', title: '操作', fixed: 'right' }
+                    ]
+                ]
+            });
+        }
+
+        //function add() {
+        //    layerOpen({
+        //        type: 2,
+        //        title: '添加',
+        //        area: ['850px', '95%'],
+        //        content: ['/product/product/edit', 'yes']
+        //    });
+        //}
+
+        //function viewLangName(productId, langId, langName) {
+        //    layerOpen({
+        //        type: 2,
+        //        title: langName + '-编辑名称',
+        //        area: ['850px', '600px;'],
+        //        content: ['/product/product/EditLanguage?productId=' + productId + '&langId=' + langId, 'no']
+        //    });
+        //}
+
+        //function viewSeo(productId, langId, langName) {
+        //    layerOpen({
+        //        type: 2,
+        //        title: langName + '-编辑SEO',
+        //        area: ['850px', '400px;'],
+        //        content: ['/product/product/EditSeo?productId=' + productId + '&langId=' + langId, 'no']
+        //    });
+        //}
+
+        //function viewDesc(productId, langId, langName) {
+        //    layerOpen({
+        //        type: 2,
+        //        title: langName + '-编辑商品详情',
+        //        area: ['950px', '95%;'],
+        //        content: ['/product/product/EditDescription?productId=' + productId + '&langId=' + langId, 'yes']
+        //    });
+        //}
+    </script>
+}

@@ -1,0 +1,155 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+
+<form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <label class="layui-form-label">绑定状况</label>
+            <div class="layui-input-block" style="width:95px;">
+                <select name="ShowBind" lay-filter="ShowBind">
+                    <option value="">全部</option>
+                    <option value="1">已绑定</option>
+                    <option value="0">未绑定</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-mid" style="padding: 0!important;">
+            <input type="text" name="SearchKey" autocomplete="off" class="layui-input" style="width: 120px;" placeholder="搜索组名称">
+        </div>
+        <div class="layui-form-mid" style="padding: 0!important;">
+            <button type="submit" class="layui-btn layui-btn-normal" lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i></button>
+        </div>
+    </div>
+</form>
+
+
+<table id="data-table" class="layui-table" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+
+
+@section Scripts
+{
+    <!-- 操作列 -->
+    <script type="text/html" id="opt">
+        {{# if(d.IsBinding){ }}
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="unbind">解绑</a>
+        <button class="layui-btn layui-btn-warm layui-btn-xs" lay-event="authorize">授权</button>
+        {{# } else { }}
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="bind">绑定</a>
+        {{# } }}
+    </script>
+    <script>
+        var table;
+
+        layui.use(['table', 'form'],
+            function() {
+                table = layui.table;
+                var form = layui.form;
+
+                //监听工具条
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        var layEvent = obj.event;
+
+                        if (layEvent === 'bind') {
+                            showLoader();
+                            var url = '/sys/permission/SaveBindUserGroup?userid=' + Request.QueryString('userid') + '&groupId=' + data.ID + '&action=bind';
+                            axios.get(url).then(function(response) {
+                                if (response.status === 200) {
+                                    var result = response.data;
+                                    if (result.IsError) {
+                                        msgFail(result.Message);
+                                    } else {
+                                        msgOk(result.Message,
+                                            function() {
+                                                data.IsBinding = true;
+                                                obj.update(data);
+                                                table.reloadData('data-table',
+                                                    {
+                                                        scrollPos: 'fixed' // 保持滚动条位置不变 - v2.7.3 新增
+                                                    });
+                                            });
+                                    }
+                                } else {
+                                    msgFail('请求失败');
+                                }
+                            });
+                        }
+
+                        if (layEvent === 'unbind') {
+                            showLoader();
+                            var url = '/sys/permission/SaveBindUserGroup?userid=' + Request.QueryString('userid') + '&groupId=' + data.ID + '&action=unbind';
+                            axios.get(url).then(function(response) {
+                                if (response.status === 200) {
+                                    var result = response.data;
+                                    if (result.IsError) {
+                                        msgFail(result.Message);
+                                    } else {
+                                        msgOk(result.Message,
+                                            function() {
+                                                data.IsBinding = false;
+                                                obj.update(data);
+                                                table.reloadData('data-table',
+                                                    {
+                                                        scrollPos: 'fixed' // 保持滚动条位置不变 - v2.7.3 新增
+                                                    });
+                                            });
+                                    }
+                                } else {
+                                    msgFail('请求失败');
+                                }
+                            });
+                        }
+
+                        if (layEvent === 'authorize') {
+                            layerOpen({
+                                type: 2,
+                                title: '授权访问操作',
+                                area: ['480px', '600px'],
+                                content: ['/sys/permission/ViewMenu?groupId=' + data.ID, 'yes']
+                            });
+                        }
+                    });
+
+                //搜索
+                form.on('submit(data-search-btn)',
+                    function(data) {
+                        searchData(data.field.ShowBind,data.field.SearchKey);
+                        return false;
+                    });
+
+                //加载
+                loadData();
+            });
+
+        function searchData(showBind,searchKey) {
+            table.reload('data-table',
+                {
+                    where: {
+                        showBind:showBind,
+                        searchKey: searchKey,
+                        userid: Request.QueryString('userid')
+                    }
+                });
+        }
+
+        // 渲染表格
+        function loadData() {
+            tableRender({
+                elem: '#data-table',
+                url: '/sys/Permission/UserGroupList',
+                page: true,
+                where: {
+                    userid: Request.QueryString('userid')
+                },
+                cols: [
+                    [
+                        { field: 'Name', width: 120, title: '组名称' },
+                        { templet: '#opt', width: 120, align: 'center', title: '操作' }
+                    ]
+                ]
+            });
+        }
+    </script>
+}

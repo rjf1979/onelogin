@@ -1,0 +1,185 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+<form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">搜索关键字</label>
+            <div class="layui-input-inline" style="width: 380px">
+                <input type="text" name="SearchKey" autocomplete="off" class="layui-input" placeholder="可搜索登陆账号、姓名、手机号">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button type="submit" class="layui-btn layui-btn-normal"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+        </div>
+        <div class="layui-inline">
+            <button type="button" class="layui-btn layui-btn-primary" lay-filter="data-add-btn" onclick="add()"><i class="layui-icon layui-icon-add-1"></i>添加</button>
+        </div>
+    </div>
+</form>
+<table id="data-table" class="layui-table" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+@section Scripts
+{
+    <!-- 操作列 -->
+    <script type="text/html" id="opt">
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="group">绑定</a>
+    </script>
+    <script id="isAdminTpl" type="text/html">
+        <input type="checkbox" name="IsAdmin" value="{{d.ID}}" lay-skin="switch" lay-text="管理员|普通用户" lay-filter="IsAdmin" {{ d.IsAdmin ? 'checked' : '' }}>
+    </script>
+    <script id="statusTpl" type="text/html">
+        <input type="checkbox" name="Status" value="{{d.ID}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="Status" {{ d.Status== 10 ? 'checked' : '' }}>
+    </script>
+    <script>
+        var table;
+
+        layui.use(['table', 'form'],
+            function() {
+                var $ = layui.jquery;
+                var form = layui.form;
+                table = layui.table;
+
+                $('#btn_refresh').click(function() {
+                    loadData();
+                });
+
+                //状态监听操作
+                form.on('switch(Status)',
+                    function(obj) {
+                        var status = -10;
+                        if (obj.elem.checked) {
+                            status = 10;
+                        }
+                        showLoader();
+                        var url = "/sys/loginUser/switchStatus?userId=" + this.value + '&status=' + status;
+                        axios.get(url).then(function(response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail(msg);
+                                } else {
+                                    closeLoader();
+                                }
+                            }
+                        });
+                    });
+                form.on('switch(IsAdmin)',
+                    function(obj) {
+                        var isAdmin=false;
+                        if (obj.elem.checked) {
+                            isAdmin=true;
+                        }
+                        showLoader();
+                        var url = "/sys/loginUser/SwitchAdmin?userId=" + this.value + '&isAdmin=' + isAdmin;
+                        axios.get(url).then(function(response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail(msg);
+                                } else {
+                                    closeLoader();
+                                }
+                            }
+                        });
+                    });
+
+                //监听工具条
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        var layEvent = obj.event;
+
+                        if (layEvent === 'group') {
+                            layerOpen({
+                                type: 2,
+                                title: ' 绑定用户组',
+                                area: ['600px', '800px'],
+                                content: ['/sys/permission/ViewUserGroup?userid=' + data.ID, 'yes']
+                            });
+                        }
+
+                        if (layEvent === 'edit') {
+                            layerOpen({
+                                type: 2,
+                                title: '编辑',
+                                area: ['450px', '320px'],
+                                content: ['/sys/loginUser/edit?userId=' + data.ID, 'yes']
+                            });
+                        }
+                    });
+
+                //搜索
+                form.on('submit(data-search-btn)',
+                    function(data) {
+                        table.reload('data-table',
+                            {
+                                where: { searchKey: data.field.SearchKey }
+                            });
+                        return false;
+                    });
+
+                //加载
+                loadData();
+            });
+
+        // 渲染表格
+        function loadData() {
+            tableRender({
+                elem:'#data-table',
+                defaultToolbar: [],
+                page: true,
+                limit: 15,
+                limits: [15, 20, 30, 40.50],
+                url: '/sys/loginuser/list',
+                cols: [
+                    [
+                        { field: 'ID', width: 80, title: "ID" },
+                        { field: 'LoginName', width: 100, title: '登陆名' },
+                        { field: 'Password', width: 120, title: '密码', templet: function(data) {
+                                return data.Password + ' <a href="javascript:initPwd(' + data.UserID + ',\'' + data.UserName + '\');"><i class="layui-icon layui-icon-refresh-3" style="color:red"></i></a>';
+                            }
+                        },
+                        { field: 'IsAdmin', width: 120, title: '是否管理员',align:'center', templet:'#isAdminTpl' },
+                        { width: 100, title: '状态',align:'center',  templet:'#statusTpl' },
+                        { field: 'LastLoginTime', width: 160, title: '近期登陆' },
+                        { field: 'CreateTime', width: 160, title: '创建时间' },
+                        { templet: '#opt', width: 80, align: 'center', title: '用户组' }
+                    ]
+                ]
+            });
+        }
+
+        function add() {
+            layerOpen({
+                type: 2,
+                title: '添加',
+                area: ['450px', '220px'],
+                content: ['/sys/loginUser/edit', 'yes']
+            });
+        }
+
+        function initPwd(userid, userName) {
+            layer.confirm('准备把用户：' + userName + ' 的密码重置？',
+                { icon: 3, title: '提示' },
+                function(index) {
+                    layer.close(index);
+                    doInitPwd(userid, userName);
+                });
+        }
+
+        function doInitPwd(userid, userName) {
+            showLoader();
+            var url = '/sys/permission/initpwd?userid=' + userid;
+            axios.get(url).then(function(response) {
+                if (response.status === 200) {
+                    var result = response.data;
+                    msg(result, function() {
+                        table.reload('data-table');
+                    });
+                } else {
+                    msgFail('重置密码，用户：' + userName + ' 请求失败');
+                }
+            });
+        }
+    </script>
+}

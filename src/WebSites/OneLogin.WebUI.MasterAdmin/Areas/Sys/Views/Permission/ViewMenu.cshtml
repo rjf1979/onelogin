@@ -1,0 +1,116 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+<table id="data-table" class="layui-table" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+
+
+@section Scripts
+{
+    <!-- 操作列 -->
+    <script type="text/html" id="opt">
+        {{# if(d.Authorized){ }}
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="unAuthorize">解权</a>
+            {{# if (d.Href && d.Href.length>0){ }} <a class="layui-btn layui-btn-xs" lay-event="opt">功能</a>{{# } }}
+        {{# } else { }}
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="authorize">授权</a>
+        {{# } }}
+    </script>
+    <script>
+        var treeTable;
+        var table;
+
+        layui.use(['table', 'form', 'treetable'],
+            function() {
+                table = layui.table;
+                treeTable = layui.treetable;
+
+                //监听工具条
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        var layEvent = obj.event;
+
+                        if (layEvent === 'authorize') {
+                            var url = '/sys/permission/AuthorizeMenu?groupId=' + Request.QueryString('groupId') + '&adminSiteID=' + Request.QueryString('adminSiteID') + '&authorizeMenuId=' + data.ID + '&act=1';
+                            axios.get(url).then(function(response) {
+                                if (response.status === 200) {
+                                    var result = response.data;
+                                    if (result.IsError) {
+                                        msgFail(result.Message);
+                                    } else {
+                                        msgOk(result.Message,
+                                            function() {
+                                                data.Authorized = true;
+                                                obj.update(data);
+                                                table.reloadData('data-table',{
+                                                    scrollPos: 'fixed'  // 保持滚动条位置不变 - v2.7.3 新增
+                                                });
+                                            },
+                                            0);
+                                    }
+                                } else {
+                                    msgFail('请求失败');
+                                }
+                            });
+                        }
+
+                        if (layEvent === 'unAuthorize') {
+                            var url = '/sys/permission/AuthorizeMenu?groupId=' + Request.QueryString('groupId') + '&adminSiteID=' + Request.QueryString('adminSiteID') + '&authorizeMenuId=' + data.ID + '&act=0';
+                            axios.get(url).then(function(response) {
+                                if (response.status === 200) {
+                                    var result = response.data;
+                                    if (result.IsError) {
+                                        msgFail(result.Message);
+                                    } else {
+                                        msgOk(result.Message,
+                                            function() {
+                                                data.Authorized = false;
+                                                obj.update(data);
+                                                table.reloadData('data-table',{
+                                                    scrollPos: 'fixed'  // 保持滚动条位置不变 - v2.7.3 新增
+                                                });
+                                            },
+                                            0);
+                                    }
+                                } else {
+                                    msgFail('请求失败');
+                                }
+                            });
+                        }
+
+                        if (layEvent === 'opt') {
+                            layerOpen({
+                                type: 2,
+                                title: '授权功能操作点',
+                                area: ['400px', '320px'],
+                                content: ['/sys/permission/ViewOperation?menuId=' + data.ID + '&groupid=' + Request.QueryString('groupid'), 'no']
+                            });
+                        }
+
+                    });
+
+                //加载
+                loadData();
+            });
+
+        // 渲染表格
+        function loadData() {
+            treeTableRender({
+                treeColIndex: 0,
+                treeSpid: 0,
+                treeIdName: 'ID',
+                treePidName: 'ParentID',
+                elem: '#data-table',
+                url: '/sys/permission/menulist',
+                page: false,
+                where: { groupId: Request.QueryString('groupid'), adminSiteID: Request.QueryString('adminSiteID') },
+                cols: [
+                    [
+                        { field: 'Name', width: 260, title: '菜单名称' },
+                        { templet: '#opt', width: 140, align: 'center', title: '操作' }
+                    ]
+                ]
+            });
+        }
+    </script>
+}

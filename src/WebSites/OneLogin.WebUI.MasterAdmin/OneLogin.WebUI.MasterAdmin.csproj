@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants)TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Settings\Views\Version\**" />
+    <Compile Remove="wwwroot\lib\layuimini\page\**" />
+    <Content Remove="Areas\Settings\Views\Version\**" />
+    <Content Remove="wwwroot\lib\layuimini\page\**" />
+    <EmbeddedResource Remove="Areas\Settings\Views\Version\**" />
+    <EmbeddedResource Remove="wwwroot\lib\layuimini\page\**" />
+    <None Remove="Areas\Settings\Views\Version\**" />
+    <None Remove="wwwroot\lib\layuimini\page\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Settings\Controllers\VersionController.cs" />
+    <Compile Remove="Common\AuthorizePolicy.cs" />
+    <Compile Remove="Common\AuthorizeRole.cs" />
+    <Compile Remove="Common\PermissionAuthorizationHandler.cs" />
+    <Compile Remove="Controllers\EditorController.cs" />
+    <Compile Remove="Controllers\InstallController.cs" />
+    <Compile Remove="Filters\PermissionAttribute.cs" />
+    <Compile Remove="Models\BasePageModel.cs" />
+    <Compile Remove="Models\IDAndNameModel.cs" />
+    <Compile Remove="PermissionAuthorizationRequirement.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+    <PackageReference Include="NLog.Extensions.Hosting" Version="5.2.3" />
+    <PackageReference Include="NLog.Targets.Http" Version="1.0.20" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\FlowData\Data\" />
+    <Folder Include="Areas\FlowData\Models\" />
+    <Folder Include="Areas\Log\Data\" />
+    <Folder Include="Areas\Log\Models\" />
+    <Folder Include="Areas\Settings\Data\" />
+    <Folder Include="Areas\Settings\Models\" />
+    <Folder Include="Areas\Sys\Data\" />
+    <Folder Include="Filters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\animated.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\bordered-pulled.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\core.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\fixed-width.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\font-awesome.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\icons.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\larger.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\list.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\mixins.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\path.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\rotated-flipped.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\screen-reader.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\stacked.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\less\variables.less" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\font-awesome.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_animated.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_bordered-pulled.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_core.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_fixed-width.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_icons.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_larger.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_list.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_mixins.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_path.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_rotated-flipped.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_screen-reader.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_stacked.scss" />
+    <None Include="wwwroot\lib\layuimini\lib\font-awesome-4.7.0\scss\_variables.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Sysbase.Core\Sysbase.Core.csproj" />
+    <ProjectReference Include="..\..\Sysbase.Domains\Sysbase.Domains.csproj" />
+    <ProjectReference Include="..\..\Sysbase.DomainServices\Sysbase.DomainServices.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+@using Public.Core.Extensions
+@model Sysbase.Domains.Entities.DeploySettingData;
+<link href="/lib/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
+
+<form class="layui-form layui-form-pane" action="" lay-filter="formData">
+
+    <input type="hidden" name="ID" value="0" />
+
+    <div class="layui-form-item" id="div_VersionID">
+        <label class="layui-form-label">版本号</label>
+        <div class="layui-input-inline" style="width: 220px;">
+            <input type="text" name="VersionNumber" autocomplete="off" class="layui-input">
+        </div>
+        @*        <div class="layui-form-mid" style="padding: 0 !important; padding-top: 2px !important;">
+        <button type="button" class="layui-btn layui-btn-normal">
+        <i class="layui-icon layui-icon-add-1"></i>
+        </button>
+        </div>*@
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">配置内容</label>
+        <div class="layui-input-block">
+            <textarea name="ValueContent" style="height: 500px; display: none;" autocomplete="off" class="layui-textarea"></textarea>
+            <div id="jsoneditor" style="width: auto; height: 500px;"></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">提交保存</button>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts
+    {
+    <script src="/lib/jsoneditor/jsoneditor.min.js"></script>
+    <script>
+        // create the editor
+        const container = document.getElementById("jsoneditor");
+        const options = { mode: 'code' }
+        const editor = new JSONEditor(container, options);
+
+        // set json
+        //const initialJson = {}
+        //editor.set(initialJson);
+
+        // get json
+        //const updatedJson = editor.get();
+
+        layui.use(['form', 'layer'],
+            function () {
+                var $ = layui.jquery;
+                var form = layui.form;
+                var layer = layui.layer;
+
+                //表单初始赋值
+                form.val('formData', @Html.Raw(Model?.ToJson()?? new object().ToJson()));
+                editor.set(@Html.Raw(Model?.ValueContent??"{}"));
+
+                if (parseInt(Request.QueryString("id")) > 0) {
+                    $('#div_VersionID').hide();
+                }
+
+                $('#btn_addSettingPanel').click(function () {
+                    debugger;
+                    var panelHtml = $('#empty_panel').html();
+                    $('#settingPanel').append(panelHtml);
+                });
+
+                //监听提交
+                form.on('submit(demo1)',
+                    function (data) {
+                        showLoader();
+                        var verID = parseInt(data.field.VersionID);
+                        if (isNaN(verID)) verID = 0;
+                        var jsonData = {
+                            ID: parseInt(data.field.ID),
+                            ProjectID: parseInt(Request.QueryString("projectId")),
+                            VersionID: verID,
+                            EnvironmentID: parseInt(Request.QueryString("environmentId")),
+                            VersionNumber: data.field.VersionNumber,
+                            ValueContent: JSON.stringify(editor.get())
+                        };
+
+                        axios.post('/settings/settingsData/Save', jsonData).then(function (response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail(result.Message);
+                                } else {
+                                    msgOk("保存成功",
+                                        function () {
+                                            closeMe();
+                                            parent.window.table.reload('data-table');
+                                        });
+                                }
+                            } else {
+                                msgFail("请求失败");
+                            }
+                        });
+                        return false;
+                    });
+            });
+    </script>
+    }

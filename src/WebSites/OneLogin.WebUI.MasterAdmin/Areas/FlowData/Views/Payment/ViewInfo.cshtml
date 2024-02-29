@@ -1,0 +1,194 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+@using Public.Core.Extensions
+@model Sysbase.Domains.Entities.Payment.PayRequestEntity;
+
+<div class="layui-tab layui-tab-brief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">基础信息</li>
+        <li>其它信息</li>
+        <li>支付通知</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <table class="layui-table">
+                <tbody>
+                    <tr>
+                        <td style="width: 150px; text-align: right;">支付流水号</td>
+                        <td>@Model.PayRequestId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付交易ID</td>
+                        <td>@Model.TransactionId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">人民币金额</td>
+                        <td>@Model.CNY_TotalPayAmount</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付货币</td>
+                        <td>@Model.CurrencyType</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付汇率</td>
+                        <td>@Model.CurrencyPayRate</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付平台</td>
+                        <td>@Model.PayPlatform.GetDescription()</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付状态</td>
+                        <td>@Model.PayStatusInfo</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">交易关闭</td>
+                        <td>
+                            @{
+                                var txt = Model.IsTransactionClosed ? "已关闭" : "未关闭";
+                                <span>@txt</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">交易场景</td>
+                        <td>@Model.PayType</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">流水时间</td>
+                        <td>@Model.CreateTime</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">单据号</th>
+                        <th style="width: 100px;">货币类型</th>
+                        <th>金额</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var payRequestDetailEntity in @Model.PayRequestDetails)
+                        {
+                            <tr>
+                                <td>@payRequestDetailEntity.OriginalBillNo</td>
+                                <td>@Model.CurrencyType</td>
+                                <td>@payRequestDetailEntity.CurrencyPayAmount.ToString("F")</td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-tab-item">
+            <table class="layui-table">
+                <tbody>
+                    <tr>
+                        <td style="width: 180px; text-align: right;">商户ID</td>
+                        <td>@Model.PayRequestExtInfo.MerchantId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">AppId</td>
+                        <td>@Model.PayRequestExtInfo.AppId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">OpenId</td>
+                        <td>@Model.PayRequestExtInfo.OpenId</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">下单结果</td>
+                        <td style="width: 800px;">
+                            <textarea class="layui-textarea" readonly="readonly">@Model.PayRequestExtInfo.PayOrderResult</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付描述</td>
+                        <td>@Model.PayRequestExtInfo.Description</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付完成跳转</td>
+                        <td>@Model.PayRequestExtInfo.RedirectUrl</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">平台通知地址</td>
+                        <td>@Model.PayRequestExtInfo.NotifyUrl</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">查询地址</td>
+                        <td>@Model.PayRequestExtInfo.QueryUrl</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">通知支付成功地址</td>
+                        <td>@Model.PayRequestExtInfo.NotifyPaySuccessUrl</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">是否通知支付成功</td>
+                        <td>@(Model.PayRequestExtInfo.IsNotifyPaySucceed?"成功":"未通知 or 失败")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-tab-item">
+            <table class="layui-table">
+                <tbody>
+                    <tr>
+                        <td style="width: 150px; text-align: right;">通知类型</td>
+                        <td>@Model.PayNotify?.PayNotifyType.GetDescription()</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">通知时间</td>
+                        <td>@Model.PayNotify?.NotifyTime</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">通知内容</td>
+                        <td><textarea readonly="readonly" class="layui-textarea">@Model.PayNotify?.NotifyContent</textarea></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">平台交易ID</td>
+                        <td>
+                            @Model.PayNotify?.PayResult.TransactionId
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">交易状态码</td>
+                        <td>@Model.PayNotify?.PayResult.TradeStateCode</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付成功时间</td>
+                        <td>@Model.PayNotify?.PayResult.PaySuccessTime</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">是否支付成功</td>
+                        <td>@Model.PayNotify?.PayResult.IsPaySuccess</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">总金额</td>
+                        <td>@Model.PayNotify?.PayResult.TotalAmount</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">支付金额</td>
+                        <td>@Model.PayNotify?.PayResult.PayAmount</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">时间</td>
+                        <td>@Model.PayNotify?.PayResult.CreateTime</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script>
+        layui.use(function () {
+            //layui.code({ elem: "result-code" });
+        });
+
+
+    </script>
+}

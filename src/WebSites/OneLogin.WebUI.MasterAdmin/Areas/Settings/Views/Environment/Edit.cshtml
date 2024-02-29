@@ -1,0 +1,74 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+@using Public.Core.Extensions
+@model Sysbase.Domains.Entities.DeployEnvironment;
+
+<form class="layui-form" action="" lay-filter="formData">
+    <input type="hidden" name="ID" value="0" />
+    <input type="hidden" name="ProjectID" value="0" />
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">环境名称</label>
+        <div class="layui-input-block" style="width: 280px">
+            <input type="text" name="EnvironmentName" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">环境编码</label>
+        <div class="layui-input-block" style="width: 280px">
+            <input type="text" name="EnvironmentCode" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <script>
+        layui.use(['form', 'layer'],
+            function() {
+                var $ = layui.jquery;
+                var form = layui.form;
+
+                $('input[name="ProjectID"]').val(Request.QueryString("projectId"));
+
+                //表单初始赋值
+                form.val('formData', @Html.Raw(Model.ToJson()));
+
+                //监听提交
+                form.on('submit(demo1)',
+                    function(data) {
+                        showLoader();
+                        var jsonData = {
+                            ID : parseInt(data.field.ID),
+                            ProjectID: parseInt(data.field.ProjectID),
+                            EnvironmentName: data.field.EnvironmentName,
+                            EnvironmentCode: data.field.EnvironmentCode
+                        };
+                        axios.post('/settings/Environment/save', jsonData).then(function (response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail(result.Message);
+                                } else {
+                                    msgOk("保存成功",
+                                        function() {
+                                            closeMe();
+                                            parent.window.table.reload('data-table');
+                                        });
+                                }
+                            } else {
+                                msgFail("请求失败");
+                            }
+                        });
+                        return false;
+                    });
+            });
+    </script>
+}

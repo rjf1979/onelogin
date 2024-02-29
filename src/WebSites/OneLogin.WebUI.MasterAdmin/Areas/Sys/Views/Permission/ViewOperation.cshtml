@@ -1,0 +1,94 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+@using Public.Core.Extensions
+@model Sysbase.Domains.Entities.AuthorizedRecord;
+
+<form class="layui-form" action="" lay-filter="formData">
+    <input type="hidden" name="UserGroupPowerID" value="@Model.ID" />
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">功能点</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="read" title="查阅">
+            <input type="checkbox" name="write" title="修改"><br />
+            <input type="checkbox" name="approve" title="审批">
+            <input type="checkbox" name="export" title="导数据">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <script>
+        layui.use(['form', 'layer'],
+            function() {
+                var $ = layui.jquery;
+                var form = layui.form;
+
+                var formObj = {};
+                var oldOpt = '@Model.AllowPolicies';
+                if (oldOpt.indexOf('read')>=0) {
+                    formObj.read = true;
+                }
+                if (oldOpt.indexOf('write')>=0) {
+                    formObj.write = true;
+                }
+                if (oldOpt.indexOf('approve')>=0) {
+                    formObj.approve =true;
+                }
+                if (oldOpt.indexOf('export')>=0) {
+                    formObj.export = true;
+                }
+                //表单初始赋值
+                form.val('formData',formObj);
+                console.log(JSON.stringify(formObj));
+
+                //监听提交
+                form.on('submit(demo1)',
+                    function(data) {
+                        var obj = data.field;
+                        console.log(JSON.stringify(obj));
+                        //return false;
+                        var opt = new Array();
+                        if (obj.read === "on") {
+                            opt.push("read");
+                        }
+                        if (obj.write === "on") {
+                            opt.push("write");
+                        }
+                        if (obj.approve === "on") {
+                            opt.push("approve");
+                        }
+                        if (obj.export === "on") {
+                            opt.push("export");
+                        }
+                        console.log(opt.join(","));
+                        showLoader();
+                        var url = '/sys/permission/AuthorizeOpt?id=' + obj.UserGroupPowerID + '&opt=' + opt.join(",");
+                        console.log(url);
+                        //return false;
+                        axios.get(url).then(function(response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail(result.Message);
+                                } else {
+                                    msgOk("保存成功",
+                                        function() {
+                                            closeMe();
+                                        });
+                                }
+                            } else {
+                                msgFail("请求失败");
+                            }
+                        });
+                        return false;
+                    });
+            });
+    </script>
+}

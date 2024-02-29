@@ -1,0 +1,128 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+@using Public.Core.Extensions
+@model Sysbase.Domains.Entities.Menu;
+
+<form class="layui-form" action="" lay-filter="formData">
+    <input type="hidden" name="ID" id="ID" value="0" />
+    <input type="hidden" name="ParentID" id="ParentID" value="0" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="Name" autocomplete="off" lay-verify="required" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item" id="div_AdminSiteID">
+        <label class="layui-form-label">选择后台</label>
+        <div class="layui-input-block" style="width: 160px">
+            <select name="AdminSiteID" id="AdminSiteID" lay-filter="AdminSiteID"></select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">Icon</label>
+        <div class="layui-input-block" style="width: 180px">
+            <input type="text" name="Icon" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="Href" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">打开方式</label>
+        <div class="layui-input-block" style="width: 100px">
+            <select name="Target">
+                <option value="_self" selected="selected">iframe</option>
+                <option value="_blank">新窗口</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-block" style="width: 100px">
+            <input type="text" name="Sort" autocomplete="off" value="0" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+        </div>
+    </div>
+</form>
+@section Scripts
+    {
+    <script>
+        layui.use(['form', 'layer'],
+            function () {
+                var $ = layui.jquery;
+                var form = layui.form;
+                var layer = layui.layer;
+
+                $('#ID').val(Request.QueryString('id'));
+                $('#ParentID').val(Request.QueryString('pid'));
+
+                //加载站点信息
+                axios.get('/sys/menu/GetAdminSiteList').then(function (response) {
+                    if (response.status == 200) {
+                        var items = response.data;
+                        layuiSelectRender(form, $('#AdminSiteID'), "选择管理后台", items);
+                        //
+                        if (Request.QueryString('id') > 0) {
+                            //表单初始赋值
+                            var formData = @Html.Raw(Model.ToJson());
+                            form.val('formData', formData);
+                        }
+                    }
+                });
+
+                if (Request.QueryString('pid') > 0) {
+                    $('#div_AdminSiteID').hide();
+                }
+
+
+                //监听提交
+                form.on('submit(demo1)',
+                    function (data) {
+                        showLoader();
+                        //debugger;
+                        var model = {
+                            ID: toInt(data.field.ID),
+                            ParentID: toInt(data.field.ParentID),
+                            Href: data.field.Href,
+                            Icon: data.field.Icon,
+                            Sort: toInt(data.field.Sort),
+                            Target: data.field.Target,
+                            Name: data.field.Name,
+                            AdminSiteID: toInt(data.field.AdminSiteID)
+                        };
+                        if (model.ParentID==0 && model.AdminSiteID == 0) msgFail('请选择站点');
+                        axios.post('/sys/menu/save', model).then(function (response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail(result.Message);
+                                } else {
+                                    msgOk("保存成功",
+                                        function () {
+                                            closeMe();
+                                            parent.window.loadData();
+                                        });
+                                }
+                            } else {
+                                msgFail("请求失败");
+                            }
+                        });
+                        return false;
+                    });
+            });
+    </script>
+}

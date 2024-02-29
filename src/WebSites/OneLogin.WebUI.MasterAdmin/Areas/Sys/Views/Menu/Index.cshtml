@@ -1,0 +1,203 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+
+<form class="layui-form" action="" lay-filter="formData">
+    <div class="layui-form-item">
+        <div class="layui-inline" style="width: 160px">
+            <select name="AdminSiteID" id="AdminSiteID" lay-filter="AdminSiteID"></select>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-btn-group">
+                <button class="layui-btn" type="button" id="btn-expand">全部展开</button>
+                <button class="layui-btn layui-btn-normal" type="button" id="btn-fold">全部折叠</button>
+                <button class="layui-btn layui-btn-primary" type="button" id="btn_refresh">刷新</button>
+                <button class="layui-btn layui-btn-warm" type="button" id="btn_add">添加</button>
+            </div>
+        </div>
+    </div>
+</form>
+<table id="data-table" class="layui-table" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+
+<!-- 操作列 -->
+<script type="text/html" id="opt">
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="pid">父级</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="add">添加</a>
+</script>
+
+<script id="statusTpl" type="text/html">
+    <input type="checkbox" name="Status" value="{{d.ID}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="status" {{ d.Status== 10 ? 'checked' : '' }}>
+</script>
+
+@section Scripts
+{
+    <script>
+        var treeTable;
+        var table;
+
+        layui.use(['table', 'form', 'treetable'],
+            function() {
+                var $ = layui.jquery;
+                var form = layui.form;
+                table = layui.table;
+                treeTable = layui.treetable;
+
+                //加载站点信息
+                axios.get('/sys/menu/GetAdminSiteList').then(function(response) {
+                    if (response.status == 200) {
+                        var items = response.data;
+                        layuiSelectRender(form, $('#AdminSiteID'), "选择管理后台", items);
+                    }
+                });
+
+
+                form.on('select(AdminSiteID)',
+                    function(data) {
+                        if (data.value) {
+                            //加载
+                            loadData(data.value);
+                        }
+                    });
+
+                $('#btn-expand').click(function() {
+                    treeTable.expandAll('#data-table');
+                });
+
+                $('#btn-fold').click(function() {
+                    treeTable.foldAll('#data-table');
+                });
+
+                $('#btn_refresh').click(function() {
+                    loadData();
+                });
+
+                $('#btn_add').click(function() {
+                    layerOpen({
+                        type: 2,
+                        title: '添加',
+                        area: ['600px', '500px'],
+                        content: ['/sys/menu/edit', 'no']
+                    });
+                });
+
+                //状态监听操作
+                form.on('switch(status)',
+                    function(obj) {
+                        var msg = "启用失败";
+                        var status = 10;
+                        if (!obj.elem.checked) {
+                            status = -10;
+                            msg = "禁用失败";
+                        }
+                        showLoader();
+                        var url = "/sys/menu/switch?type=status&id=" + this.value + '&value=' + status;
+                        axios.get(url).then(function(response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail(msg);
+                                } else {
+                                    closeLoader();
+                                }
+                            }
+                        });
+                    });
+
+                //监听工具条
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        var layEvent = obj.event;
+
+                        if (layEvent === 'pid') {
+                            layerOpen({
+                                type: 2,
+                                title: data.Name + ' > 调整父级菜单',
+                                area: ['400px', '600px'],
+                                content: ['/sys/menu/viewmenuname?id=' + data.ID + '&pid=' + data.ParentID + '&adminSiteID=' + data.AdminSiteID, 'yes']
+                            });
+                        }
+
+                        if (layEvent === 'add') {
+                            layerOpen({
+                                type: 2,
+                                title: '添加',
+                                area: ['600px', '500px'],
+                                content: ['/sys/menu/edit?pid=' + data.ID, 'no']
+                            });
+                        }
+
+                        if (layEvent === 'edit') {
+                            layerOpen({
+                                type: 2,
+                                title: '编辑',
+                                area: ['600px', '500px'],
+                                content: ['/sys/menu/edit?id=' + data.ID, 'no']
+                            });
+                        }
+                    });
+            });
+
+        // 渲染表格
+        function loadData() {
+            treeTableRender({
+                treeColIndex: 1,
+                treeSpid: 0,
+                treeIdName: 'ID',
+                treePidName: 'ParentID',
+                elem: '#data-table',
+                url: '/sys/menu/list?adminSiteID=' + $('#AdminSiteID').val(),
+                height: 'full-100',
+                page: false,
+                cols: [
+                    [
+                        { field: 'ID', width: 60, title: "ID" },
+                        { field: 'Name', width: 260, title: '菜单名称' },
+                        { field: 'ParentID', width: 80, title: "父级ID" },
+                        { field: 'Icon', title: 'icon', width: 120 },
+                        { field: 'Href', title: '地址' },
+                        {
+                            field: 'Sort',
+                            width: 80,
+                            align: 'center',
+                            title: '排序',
+                            templet: function(d) {
+                                return d.Sort + '<a href="javascript:void(0);" onclick="sort(' + d.ID + ');"><i class="layui-icon layui-icon-edit"></span></a>';
+                            }
+                        },
+                        { field: 'Status', width: 100, align: 'center', templet: '#statusTpl', title: '状态' },
+                        { templet: '#opt', width: 180, align: 'center', title: '操作' }
+                    ]
+                ]
+            });
+        }
+
+        function sort(id) {
+            layer.prompt({
+                    formType: 2,
+                    title: '调整排序',
+                    area: ['100px', '20px'] //自定义文本域宽高
+                },
+                function(value, index, elem) {
+                    showLoader();
+                    axios.get('/sys/menu/sort?id=' + id + '&index=' + value).then(function(response) {
+                        if (response.status === 200) {
+                            var result = response.data;
+                            if (result.IsError) {
+                                msgFail(result.Message);
+                            } else {
+                                msgOk("调整成功",
+                                    function() {
+                                        loadData();
+                                    });
+                            }
+                        } else {
+                            msgFail("请求失败");
+                        }
+                    });
+                });
+        }
+
+    </script>
+}

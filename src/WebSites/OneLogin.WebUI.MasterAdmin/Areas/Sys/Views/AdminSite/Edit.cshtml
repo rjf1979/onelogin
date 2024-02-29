@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+@using Public.Core.Extensions
+@model Sysbase.Domains.Entities.AdminSite;
+
+<form class="layui-form" action="" lay-filter="formData">
+    <input type="hidden" name="ID" value="0" />
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">站点名称</label>
+        <div class="layui-input-block" style="width: 280px">
+            <input type="text" name="Name" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述</label>
+        <div class="layui-input-block" style="width: 280px">
+            <input type="text" name="Intro" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">LOGO</label>
+        <div class="layui-input-block" style="width: 280px">
+            <input type="text" name="LogoUrl" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">站点地址</label>
+        <div class="layui-input-block" style="width: 280px">
+            <input type="text" name="EnterUrl" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">首页地址</label>
+        <div class="layui-input-block" style="width: 280px">
+            <input type="text" name="HomePageUrl" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+<script>
+    layui.use(['form', 'layer'],
+        function() {
+            var $ = layui.jquery;
+            var form = layui.form;
+
+            //表单初始赋值
+            form.val('formData', @Html.Raw(Model.ToJson()));
+
+
+            //监听提交
+            form.on('submit(demo1)',
+                function(data) {
+                    showLoader();
+                    axios.post('/sys/adminSite/Save', data.field).then(function(response) {
+                        if (response.status === 200) {
+                            var result = response.data;
+                            if (result.IsError) {
+                                msgFail(result.Message);
+                            } else {
+                                msgOk("保存成功", function() {
+                                    closeMe();
+                                    parent.window.table.reload('data-table');
+                                });
+                            }
+                        } else {
+                            msgFail("请求失败");
+                        }
+                    });
+                    return false;
+                });
+        });
+</script>
+}

@@ -1,0 +1,131 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+<table id="data-table" class="layui-hide" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+@section Scripts
+{
+    <!-- 操作列 -->
+    <script type="text/html" id="opt">
+        <button class="layui-btn layui-btn-warm layui-btn-xs" lay-event="edit">编辑</button>
+        <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="copy">复制</button>
+    </script>
+
+    <script id="pubTpl" type="text/html">
+        <input type="checkbox" name="IsPublished" value="{{d.ID}}" lay-skin="switch" lay-text="已发布|未发布" lay-filter="IsPublished" {{ d.IsPublished ? 'checked' : '' }}>
+    </script>
+
+    <script>
+        var table;
+
+        layui.use(['table', 'form', 'layer'],
+            function() {
+                table = layui.table;
+                var form = layui.form;
+                var layer = layui.layer;
+
+                //状态监听操作
+                form.on('switch(IsPublished)',
+                    function(obj) {
+                        showLoader();
+                        var url = "/settings/settingsData/publish?id=" + this.value + '&value=' + obj.elem.checked;
+                        axios.get(url).then(function(response) {
+                            if (response.status === 200) {
+                                var result = response.data;
+                                if (result.IsError) {
+                                    msgFail('操作失败');
+                                } else {
+                                    closeLoader();
+                                }
+                            }
+                        });
+                    });
+
+                //监听操作
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        var layEvent = obj.event;
+
+                        if (layEvent === 'edit') {
+                            layerOpen({
+                                type: 2,
+                                title: '编辑 > ' + data.ID,
+                                area: ['70%', '90%'],
+                                content: ['/settings/settingsData/edit?id=' + data.ID + '&projectId=' + data.ProjectID + '&environmentId=' + data.EnvironmentID, 'yes']
+                            });
+                        }
+
+                        if (layEvent === 'copy') {
+                            layer.prompt({
+                                    formType: 0,
+                                    value: '',
+                                    title: '请输入版本'
+                                },
+                                function(value, index, elem) {
+                                    axios.get('/settings/settingsData/copy?id=' + data.ID + '&version=' + value).then(function(response) {
+                                        if (response.status == 200) {
+                                            msg(response.data,loadData());
+                                        } else {
+                                            msgFail('拷贝失败');
+                                        }
+                                        layer.close(index);
+                                    });
+                                });
+                        }
+                    });
+
+                //搜索
+                form.on('submit(data-search-btn)',
+                    function(data) {
+                        searchData(data.field.SearchKey);
+                        return false;
+                    });
+
+                //加载
+                loadData();
+            });
+
+        function add() {
+            layerOpen({
+                type: 2,
+                title: '添加',
+                area: ['480px', '380px'],
+                content: ['/settings/settingsData/edit', 'yes']
+            });
+        }
+
+        function searchData(searchKey) {
+            table.reload('data-table',
+                {
+                    where: {
+                        searchKey: searchKey,
+                        userid: Request.QueryString('userid')
+                    }
+                });
+        }
+
+        // 渲染表格
+        function loadData() {
+            tableRender({
+                elem: '#data-table',
+                url: '/settings/settingsData/List',
+                defaultToolbar: [],
+                height: 'full-100',
+                page: true,
+                limit: 15,
+                cols: [
+                    [
+                        { field: 'ID', width: 60, title: 'ID' },
+                        { field: 'ProjectName', width: 260, title: '项目名称' },
+                        { field: 'EnvironmentName', width: 200, title: '环境' },
+                        { field: 'VersionNumber', width: 180, title: '版本号' },
+                        { field: 'ValueContent', title: '配置内容' },
+                        { field: 'IsPublished', width: 110, align: 'center', title: '发布状况', templet: '#pubTpl' },
+                        { field: 'CreateTime', width: 200, title: '创建时间' },
+                        { align: 'left', width: 120, title: '操作', templet: '#opt' }
+                    ]
+                ]
+            });
+        }
+    </script>
+}

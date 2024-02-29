@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OneLogin.WebApi.AuthApi</name>
+    </assembly>
+    <members>
+        <member name="T:OneLogin.WebApi.AuthApi.Controllers.JwtController">
+            <summary>
+            Jwt授权服务
+            </summary>
+        </member>
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.JwtController.#ctor(Microsoft.Extensions.Logging.ILogger{OneLogin.WebApi.AuthApi.Controllers.JwtController},Microsoft.Extensions.Caching.Memory.IMemoryCache,Microsoft.Extensions.Configuration.IConfiguration,SqlSugar.ISqlSugarClient,OneLogin.Domains.Interfaces.IJwtAccessTokenService)">
+            <summary>
+            jwt服务
+            </summary>
+            <param name="logger"></param>
+            <param name="memoryCache"></param>
+            <param name="configuration"></param>
+            <param name="sqlSugarClient"></param>
+            <param name="jwtService"></param>
+        </member>
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.JwtController.AuthorizeAsync(OneLogin.Logic.Core.Models.Jwt.JwtTokenRequestModel)">
+            <summary>
+            授权
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.JwtController.Validate">
+            <summary>
+            验证
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

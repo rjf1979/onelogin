@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "_Layuimini";
+}
+<table id="data-table" class="layui-table" lay-filter="data-table" lay-data="{id: 'data-table'}"></table>
+
+
+@section Scripts
+{
+    <!-- 操作列 -->
+    <script type="text/html" id="opt">
+        {{# if(d.ID == Request.QueryString('pid')){ }}
+        <a class="layui-btn layui-btn-disabled layui-btn-xs" aria-disabled="True">原父级</a>
+        {{# } else if(d.ID == Request.QueryString('id')){ }}
+        <a class="layui-btn layui-btn-disabled layui-btn-xs" aria-disabled="True">自己</a>
+        {{# } else { }}
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="select">选择</a>
+        {{# } }}
+    </script>
+    <script>
+        var treeTable;
+        var table;
+
+        layui.use(['table', 'form', 'treetable'],
+            function() {
+                table = layui.table;
+                treeTable = layui.treetable;
+
+                //监听工具条
+                table.on('tool(data-table)',
+                    function(obj) {
+                        var data = obj.data;
+                        var layEvent = obj.event;
+
+                        if (layEvent === 'select') {
+                            var url = '/sys/menu/ChangeParentMenu?id=' + Request.QueryString('id') + '&pid=' + data.ID;
+                            axios.get(url).then(function(response) {
+                                if (response.status === 200) {
+                                    var result = response.data;
+                                    if (result.IsError) {
+                                        msgFail(result.Message);
+                                    } else {
+                                        msgOk(result.Message, function() {
+                                                closeMe();
+                                                parent.window.loadData();
+                                            });
+                                    }
+                                } else {
+                                    msgFail('请求失败');
+                                }
+                            });
+                        }
+                    });
+
+                //加载
+                loadData();
+            });
+
+        // 渲染表格
+        function loadData() {
+            treeTableRender({
+                treeColIndex: 0,
+                treeSpid: 0,
+                treeIdName: 'ID',
+                treePidName: 'ParentID',
+                elem: '#data-table',
+                url: '/sys/menu/list?adminSiteID=' + Request.QueryString('adminSiteID'),
+                page: false,
+                cols: [
+                    [
+                        { field: 'Name', width: 260, title: '菜单名称' },
+                        { templet: '#opt', width: 80, align: 'center', title: '选择' }
+                    ]
+                ]
+            });
+        }
+    </script>
+}

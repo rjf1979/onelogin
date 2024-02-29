@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "axios@0.27.2",
+      "destination": "wwwroot/lib/axios/"
+    },
+    {
+      "library": "layui@2.7.5",
+      "destination": "wwwroot/lib/layuimini/lib/layui/"
+    },
+    {
+      "library": "jquery@3.6.2",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "jsoneditor@9.9.2",
+      "destination": "wwwroot/lib/jsoneditor/"
+    }
+  ]
+}

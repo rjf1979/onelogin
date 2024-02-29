@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="AuthorizeApiCrossService.cs" />
+    <Compile Remove="MenuDomainService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="4.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OneLogin.Core\OneLogin.Core.csproj" />
+    <ProjectReference Include="..\OneLogin.Domains\OneLogin.Logic.Core.csproj" />
+  </ItemGroup>
+
+</Project>

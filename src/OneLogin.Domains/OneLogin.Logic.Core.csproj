@@ -6,23 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="Entities\**" />
-    <Compile Remove="Models\Basic\**" />
-    <Compile Remove="Models\Login\**" />
     <EmbeddedResource Remove="Entities\**" />
-    <EmbeddedResource Remove="Models\Basic\**" />
-    <EmbeddedResource Remove="Models\Login\**" />
     <None Remove="Entities\**" />
-    <None Remove="Models\Basic\**" />
-    <None Remove="Models\Login\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Interfaces\IAuthorizeApiCrossService.cs" />
     <Compile Remove="Interfaces\IMenuDomainService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SqlSugarCore" Version="5.1.4.82" />
   </ItemGroup>
 
   <ItemGroup>

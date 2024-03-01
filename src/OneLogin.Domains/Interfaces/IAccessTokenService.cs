@@ -1,6 +1,6 @@
 ﻿using System;
 using OneLogin.Core;
-using OneLogin.Logic.Core.Models;
+using OneLogin.Core.Models;
 
 namespace OneLogin.Logic.Core.Interfaces
 {

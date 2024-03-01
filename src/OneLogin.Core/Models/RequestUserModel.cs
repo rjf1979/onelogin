@@ -1,4 +1,4 @@
-﻿namespace OneLogin.Logic.Core.Models
+﻿namespace OneLogin.Core.Models
 {
     /// <summary>
     /// Jwt的Token模型

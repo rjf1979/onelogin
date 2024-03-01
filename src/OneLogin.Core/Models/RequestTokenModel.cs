@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using OneLogin.Core;
+using System.Net.Sockets;
 
-namespace OneLogin.Logic.Core.Models
+namespace OneLogin.Core.Models
 {
     /// <summary>
     /// Token请求模型
@@ -14,6 +14,8 @@ namespace OneLogin.Logic.Core.Models
         /// </summary>
         [Required(ErrorMessage = "名称Key不能为空")]
         public RequestUserModel UserInfo { get; set; }
+
+        public string RedirectUrl { get; set; }
 
         /// <summary>
         /// 时间戳，范围在当前时间前后一分钟内
@@ -33,10 +35,10 @@ namespace OneLogin.Logic.Core.Models
         [Required(ErrorMessage = "签名不能为空")]
         public string Sign { get; set; }
 
-        public bool IsEffectiveTimestamp()
+        public bool IsEffectiveTimestamp(int diff)
         {
             var sec = Timestamp - DateTime.Now.ToTimestamp();
-            return sec > 0;
+            return Math.Abs(sec) <= diff;
         }
 
         public bool ValidateSign(string secret)
@@ -45,10 +47,10 @@ namespace OneLogin.Logic.Core.Models
             return string.Equals(Sign, str.ToMd5(), StringComparison.CurrentCultureIgnoreCase);
         }
 
-        //public void BuildSign(string secretKey)
-        //{
-        //    var str = $"{nameof(NameKey).ToLower()}={NameKey}&{nameof(Timestamp).ToLower()}={Timestamp}&{nameof(Nonce)}={Nonce}&pwd={secretKey}";
-        //    Sign = str.ToMd5();
-        //}
+        public void BuildSign(string secret)
+        {
+            var str = $"{nameof(UserInfo.Id).ToLower()}={UserInfo.Id}&{nameof(UserInfo.Name).ToLower()}={UserInfo.Name}&{nameof(Timestamp).ToLower()}={Timestamp}&{nameof(Nonce)}={Nonce}&secret={secret}";
+            Sign = str.ToMd5();
+        }
     }
 }

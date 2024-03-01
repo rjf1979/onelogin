@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneLogin.Core;
+using OneLogin.Core.Models;
 using OneLogin.Logic.Core.Interfaces;
-using OneLogin.Logic.Core.Models;
 
 namespace OneLogin.WebApi.AuthApi.Controllers
 {
@@ -37,7 +37,7 @@ namespace OneLogin.WebApi.AuthApi.Controllers
         public IActionResult Authorize([FromBody] RequestTokenModel model)
         {
             //验证时间戳
-            if (!model.IsEffectiveTimestamp())
+            if (!model.IsEffectiveTimestamp(60))
             {
                 return Ok(ResponseTokenModel.Fail("时间戳不符"));
             }
@@ -53,8 +53,22 @@ namespace OneLogin.WebApi.AuthApi.Controllers
 
             //生成Token
             var token = _jwtService.Create(model.UserInfo, expTime);
-            var responseTokenModel = ResponseTokenModel.Ok(token, expTime);
-            return Ok(responseTokenModel);
+            if (string.IsNullOrEmpty(model.RedirectUrl))
+            {
+                var responseTokenModel = ResponseTokenModel.Ok(token, expTime);
+                return Ok(responseTokenModel);
+            }
+
+            var url = model.RedirectUrl;
+            if (model.RedirectUrl.IndexOf("?", StringComparison.Ordinal) > -1)
+            {
+                url += "&token="+token;
+            }
+            else
+            {
+                url += "?token=" + token;
+            }
+            return Redirect(url);
         }
 
         /// <summary>

@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using OneLogin.Core;
 using OneLogin.Logic.Core.Interfaces;
-using OneLogin.Logic.Core.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using OneLogin.Core.Models;
 
 namespace OneLogin.Logic.Services
 {
@@ -25,6 +23,8 @@ namespace OneLogin.Logic.Services
         /// 
         /// </summary>
         /// <param name="jwtSecurityTokenHandler"></param>
+        /// <param name="configuration"></param>
+        /// <param name="logger"></param>
         public AccessTokenService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IConfiguration configuration, ILogger<AccessTokenService> logger)
         {
             _jwtSecurityTokenHandler = jwtSecurityTokenHandler;

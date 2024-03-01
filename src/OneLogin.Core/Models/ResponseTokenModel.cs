@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
-namespace OneLogin.Logic.Core.Models
+namespace OneLogin.Core.Models
 {
     /// <summary>
     /// Token的响应返回
@@ -45,6 +45,7 @@ namespace OneLogin.Logic.Core.Models
         {
             return new ResponseTokenModel
             {
+                Message = "SUCCESS",
                 AccessToken = token,
                 ExpireTime = expireTime.ToString("yyyy-MM-dd HH:mm:ss")
             };

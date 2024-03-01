@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
-using OneLogin.Core;
 using System.Reflection;
 using System.Text;
 
@@ -15,16 +14,11 @@ builder.Services.AddControllers().AddJsonOptions(configure =>
 //NLog
 builder.Logging.AddNLogWeb();
 
-//add memory cache
-builder.Services.AddMemoryCache();
-
 //cors
 builder.Services.AddCors(options => options.AddDefaultPolicy(o =>
 {
     o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 }));
-
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 
 //swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -54,8 +48,6 @@ builder.Services.AddSwaggerGen(options =>
     if (File.Exists(xmlFilename))
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
-//
-builder.Services.AddScopedService("OneLogin.Logic.Services");
 
 //AddAuthentication
 builder.Services.AddAuthentication(option =>
@@ -69,14 +61,14 @@ builder.Services.AddAuthentication(option =>
     //
     option.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true, //是否验证Issuer
+        ValidateIssuer = true, //是否验证Issuer，请加上issuer配置
         ValidIssuer = builder.Configuration["JwtSettings:Issuer"], //发行人Issuer
         ValidateAudience = true, //是否验证Audience
         ValidAudience = builder.Configuration["JwtSettings:Audience"], //订阅人Audience
         ValidateIssuerSigningKey = true, //是否验证SecurityKey
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])), //SecurityKey
         ValidateLifetime = true, //是否验证失效时间
-        ClockSkew = TimeSpan.Zero, //过期时间容错值，解决服务器端时间不同步问题（秒）
+        ClockSkew = TimeSpan.FromSeconds(30), //过期时间容错值，解决服务器端时间不同步问题（秒）
         RequireExpirationTime = true
     };
 });

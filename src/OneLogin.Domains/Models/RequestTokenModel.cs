@@ -2,18 +2,18 @@
 using System.ComponentModel.DataAnnotations;
 using OneLogin.Core;
 
-namespace OneLogin.Logic.Core.Models.Jwt
+namespace OneLogin.Logic.Core.Models
 {
     /// <summary>
     /// Token请求模型
     /// </summary>
-    public class JwtTokenRequestModel
+    public class RequestTokenModel
     {
         /// <summary>
-        /// 名称Key
+        /// 用户信息
         /// </summary>
         [Required(ErrorMessage = "名称Key不能为空")]
-        public string NameKey { get; set; }
+        public RequestUserModel UserInfo { get; set; }
 
         /// <summary>
         /// 时间戳，范围在当前时间前后一分钟内
@@ -21,11 +21,14 @@ namespace OneLogin.Logic.Core.Models.Jwt
         [Required(ErrorMessage = "时间戳不能为空")]
         public long Timestamp { get; set; }
 
+        /// <summary>
+        /// 随机字符串，生成的授权口令不重复
+        /// </summary>
         [Required(ErrorMessage = "口令不能为空")]
-        public string Token { get; set; }
+        public string Nonce { get; set; }
 
         /// <summary>
-        /// 签名，配合Key进行加签
+        /// MD5签名，配合SecretKey进行加签
         /// </summary>
         [Required(ErrorMessage = "签名不能为空")]
         public string Sign { get; set; }
@@ -36,16 +39,16 @@ namespace OneLogin.Logic.Core.Models.Jwt
             return sec > 0;
         }
 
-        public bool ValidateSign(string secretKey)
+        public bool ValidateSign(string secret)
         {
-            var str = $"{nameof(NameKey).ToLower()}={NameKey}&{nameof(Timestamp).ToLower()}={Timestamp}&{nameof(Token)}={Token}&pwd={secretKey}";
+            var str = $"{nameof(UserInfo.Id).ToLower()}={UserInfo.Id}&{nameof(UserInfo.Name).ToLower()}={UserInfo.Name}&{nameof(Timestamp).ToLower()}={Timestamp}&{nameof(Nonce)}={Nonce}&secret={secret}";
             return string.Equals(Sign, str.ToMd5(), StringComparison.CurrentCultureIgnoreCase);
         }
 
-        public void BuildSign(string secretKey)
-        {
-            var str = $"{nameof(NameKey).ToLower()}={NameKey}&{nameof(Timestamp).ToLower()}={Timestamp}&{nameof(Token)}={Token}&pwd={secretKey}";
-            Sign = str.ToMd5();
-        }
+        //public void BuildSign(string secretKey)
+        //{
+        //    var str = $"{nameof(NameKey).ToLower()}={NameKey}&{nameof(Timestamp).ToLower()}={Timestamp}&{nameof(Nonce)}={Nonce}&pwd={secretKey}";
+        //    Sign = str.ToMd5();
+        //}
     }
 }

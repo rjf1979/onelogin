@@ -1,14 +1,14 @@
-﻿namespace OneLogin.Domains.Models.Jwt
+﻿namespace OneLogin.Logic.Core.Models
 {
     /// <summary>
     /// Jwt的Token模型
     /// </summary>
-    public class JwtTokenUserModel
+    public class RequestUserModel
     {
         /// <summary>
         /// 
         /// </summary>
-        public string Sub { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// 
@@ -16,18 +16,8 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public string Pwd { get; set; }
-
-        /// <summary>
         /// 角色
         /// </summary>
         public string Role { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public JwtTokenResponseModel TokenResponse { get; set; }
     }
 }

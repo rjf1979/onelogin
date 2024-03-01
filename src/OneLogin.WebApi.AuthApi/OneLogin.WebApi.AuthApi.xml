@@ -4,31 +4,28 @@
         <name>OneLogin.WebApi.AuthApi</name>
     </assembly>
     <members>
-        <member name="T:OneLogin.WebApi.AuthApi.Controllers.JwtController">
+        <member name="T:OneLogin.WebApi.AuthApi.Controllers.AuthController">
             <summary>
             Jwt授权服务
             </summary>
         </member>
-        <member name="M:OneLogin.WebApi.AuthApi.Controllers.JwtController.#ctor(Microsoft.Extensions.Logging.ILogger{OneLogin.WebApi.AuthApi.Controllers.JwtController},Microsoft.Extensions.Caching.Memory.IMemoryCache,Microsoft.Extensions.Configuration.IConfiguration,SqlSugar.ISqlSugarClient,OneLogin.Domains.Interfaces.IJwtAccessTokenService)">
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.AuthController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,OneLogin.Logic.Core.Interfaces.IAccessTokenService)">
             <summary>
             jwt服务
             </summary>
-            <param name="logger"></param>
-            <param name="memoryCache"></param>
             <param name="configuration"></param>
-            <param name="sqlSugarClient"></param>
             <param name="jwtService"></param>
         </member>
-        <member name="M:OneLogin.WebApi.AuthApi.Controllers.JwtController.AuthorizeAsync(OneLogin.Logic.Core.Models.Jwt.JwtTokenRequestModel)">
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.AuthController.Authorize(OneLogin.Logic.Core.Models.RequestTokenModel)">
             <summary>
             授权
             </summary>
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:OneLogin.WebApi.AuthApi.Controllers.JwtController.Validate">
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.AuthController.Validate">
             <summary>
-            验证
+            验证，需要在header里加入授权token
             </summary>
             <returns></returns>
         </member>

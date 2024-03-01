@@ -9,6 +9,7 @@
     <Compile Remove="SimpleModel.cs" />
     <Compile Remove="SugarCacheService.cs" />
     <Compile Remove="UpImageSettings.cs" />
+    <Compile Remove="UserClaimKeys.cs" />
   </ItemGroup>
 
   <ItemGroup>

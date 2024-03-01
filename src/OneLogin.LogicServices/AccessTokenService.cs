@@ -1,29 +1,35 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using OneLogin.Core;
+using OneLogin.Logic.Core.Interfaces;
+using OneLogin.Logic.Core.Models;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using OneLogin.Core;
-using OneLogin.Domains.Interfaces;
-using OneLogin.Domains.Models.Jwt;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace OneLogin.Logic.Services
 {
     /// <summary>
     /// 
     /// </summary>
-    public class JwtAccessTokenService: IJwtAccessTokenService
+    public class AccessTokenService : IAccessTokenService
     {
-        private readonly JwtSettings _jwtSettings;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<AccessTokenService> _logger;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="options"></param>
-        public JwtAccessTokenService(IOptions<JwtSettings> options)
+        /// <param name="jwtSecurityTokenHandler"></param>
+        public AccessTokenService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IConfiguration configuration, ILogger<AccessTokenService> logger)
         {
-            _jwtSettings = options.Value;
+            _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         /// <summary>
@@ -32,19 +38,20 @@ namespace OneLogin.Logic.Services
         /// <param name="model"></param>
         /// <param name="expTime"></param>
         /// <returns></returns>
-        public string CreateToken(JwtTokenUserModel model, DateTime expTime)
+        public string Create(RequestUserModel model, DateTime expTime)
         {
             var authTime = DateTime.Now;
             var expiresAt = expTime;//到期时间
             // 1. 定义需要使用到的Claims
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, model.Name),
-                new Claim("Sub", model.Sub)
+                new Claim("Name", model.Name),
+                new Claim("Id", model.Id),
+                new Claim("Role", model.Role)
             };
 
             // 2. 从 appsettings.json 中读取SecretKey
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:SecretKey"]));
 
             // 3. 选择加密算法
             var algorithm = SecurityAlgorithms.HmacSha256;
@@ -52,8 +59,8 @@ namespace OneLogin.Logic.Services
             // 4. 生成Credentials
             var signingCredentials = new SigningCredentials(secretKey, algorithm);
 
-            var issuer = _jwtSettings.Issuer;
-            var aud = _jwtSettings.Audience;
+            var issuer = "onelogin";//这些自定义
+            var aud = "onelogin";//这些自定义
 
             // 5. 根据以上，生成token
             var jwtSecurityToken = new JwtSecurityToken(
@@ -65,8 +72,9 @@ namespace OneLogin.Logic.Services
                 signingCredentials               //Credentials
             );
 
+
             // 6. 将token变为string
-            var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            var token = _jwtSecurityTokenHandler.WriteToken(jwtSecurityToken);
 
             return token;
         }

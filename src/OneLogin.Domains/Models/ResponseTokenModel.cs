@@ -2,18 +2,18 @@
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
-namespace OneLogin.Domains.Models.Jwt
+namespace OneLogin.Logic.Core.Models
 {
     /// <summary>
     /// Token的响应返回
     /// </summary>
-    public class JwtTokenResponseModel
+    public class ResponseTokenModel
     {
         /// <summary>
-        /// 
+        /// 返回消息
         /// </summary>
-        [JsonProperty("msg")]
-        [JsonPropertyName("msg")]
+        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
 
         /// <summary>
@@ -30,14 +30,9 @@ namespace OneLogin.Domains.Models.Jwt
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        public static JwtTokenResponseModel Error(string msg)
+        public static ResponseTokenModel Fail(string msg)
         {
-            return new JwtTokenResponseModel { Message = msg };
+            return new ResponseTokenModel { Message = msg };
         }
 
         /// <summary>
@@ -46,11 +41,10 @@ namespace OneLogin.Domains.Models.Jwt
         /// <param name="token"></param>
         /// <param name="expireTime"></param>
         /// <returns></returns>
-        public static JwtTokenResponseModel Ok(string token, DateTime expireTime)
+        public static ResponseTokenModel Ok(string token, DateTime expireTime)
         {
-            return new JwtTokenResponseModel
+            return new ResponseTokenModel
             {
-                Message = "success",
                 AccessToken = token,
                 ExpireTime = expireTime.ToString("yyyy-MM-dd HH:mm:ss")
             };

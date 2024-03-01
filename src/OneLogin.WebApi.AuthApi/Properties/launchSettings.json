@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "Sysbase.WebApi.AuthService": {
+    "OneLogin.WebApi.AuthApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

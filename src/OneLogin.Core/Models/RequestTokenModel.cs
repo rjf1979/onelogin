@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Sockets;
 
 namespace OneLogin.Core.Models
 {
@@ -14,8 +13,6 @@ namespace OneLogin.Core.Models
         /// </summary>
         [Required(ErrorMessage = "名称Key不能为空")]
         public RequestUserModel UserInfo { get; set; }
-
-        public string RedirectUrl { get; set; }
 
         /// <summary>
         /// 时间戳，范围在当前时间前后一分钟内

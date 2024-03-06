@@ -13,13 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.Logic.Services", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.WebApi.AuthApi", "OneLogin.WebApi.AuthApi\OneLogin.WebApi.AuthApi.csproj", "{F21E710E-07B8-4C22-86BE-8172DB96FC1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLogin.DemoLogin", "OneLogin.DemoLogin\OneLogin.DemoLogin.csproj", "{AEE416DB-E356-4C0F-8BD5-88B7C49ACB58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.DemoLogin", "OneLogin.DemoLogin\OneLogin.DemoLogin.csproj", "{AEE416DB-E356-4C0F-8BD5-88B7C49ACB58}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{426DC1EF-C7B8-4694-8887-65782A1D43E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLogin.WebUI.DemoLogin1", "OneLogin.WebUI.DemoLogin1\OneLogin.WebUI.DemoLogin1.csproj", "{91FCF539-240F-4BD0-BFF9-1A67C32BFB02}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLogin.WebUI.DemoLogin2", "OneLogin.WebUI.DemoLogin2\OneLogin.WebUI.DemoLogin2.csproj", "{0D0EBC92-2C32-4BFE-BF69-399F90F9DCBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.WebUI.Login", "OneLogin.WebUI.DemoLogin1\OneLogin.WebUI.Login.csproj", "{91FCF539-240F-4BD0-BFF9-1A67C32BFB02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,10 +49,6 @@ Global
 		{91FCF539-240F-4BD0-BFF9-1A67C32BFB02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91FCF539-240F-4BD0-BFF9-1A67C32BFB02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91FCF539-240F-4BD0-BFF9-1A67C32BFB02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D0EBC92-2C32-4BFE-BF69-399F90F9DCBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D0EBC92-2C32-4BFE-BF69-399F90F9DCBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D0EBC92-2C32-4BFE-BF69-399F90F9DCBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D0EBC92-2C32-4BFE-BF69-399F90F9DCBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,10 +56,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AEE416DB-E356-4C0F-8BD5-88B7C49ACB58} = {426DC1EF-C7B8-4694-8887-65782A1D43E0}
 		{91FCF539-240F-4BD0-BFF9-1A67C32BFB02} = {D26536E2-F777-4D01-8513-C0318D14EC76}
-		{0D0EBC92-2C32-4BFE-BF69-399F90F9DCBA} = {D26536E2-F777-4D01-8513-C0318D14EC76}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		VisualSVNWorkingCopyRoot = .
 		SolutionGuid = {81A46584-B11A-4D86-B23A-5AA047025933}
+		VisualSVNWorkingCopyRoot = .
 	EndGlobalSection
 EndGlobal

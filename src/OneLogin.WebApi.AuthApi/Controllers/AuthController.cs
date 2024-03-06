@@ -53,22 +53,8 @@ namespace OneLogin.WebApi.AuthApi.Controllers
 
             //生成Token
             var token = _jwtService.Create(model.UserInfo, expTime);
-            if (string.IsNullOrEmpty(model.RedirectUrl))
-            {
-                var responseTokenModel = ResponseTokenModel.Ok(token, expTime);
-                return Ok(responseTokenModel);
-            }
-
-            var url = model.RedirectUrl;
-            if (model.RedirectUrl.IndexOf("?", StringComparison.Ordinal) > -1)
-            {
-                url += "&token="+token;
-            }
-            else
-            {
-                url += "?token=" + token;
-            }
-            return Redirect(url);
+            var responseTokenModel = ResponseTokenModel.Ok(token, expTime);
+            return Ok(responseTokenModel);
         }
 
         /// <summary>

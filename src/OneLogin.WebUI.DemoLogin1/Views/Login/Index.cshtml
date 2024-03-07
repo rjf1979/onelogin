@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="demo-login">登录</button>
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="demo-login">点击请求登录</button>
             </div>
         </div>
         <input type="hidden" id="captchaId" name="captchaId" />
@@ -71,9 +71,10 @@
     <script src="~/lib/layui-v2.9.7/layui/layui.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/axios/dist/axios.min.js"></script>
+    <script src="~/js/common.js"></script>
     <script>
 
-        $(function() {
+        $(function () {
             reloadCaptcha();
         });
 
@@ -90,11 +91,12 @@
                 // 此处可执行 Ajax 等操作
                 //var captchaId = $("#captchaId").val();
                 //var captcha = $("#captcha").val();
-                var url = "/login/do?username=" + field.username + "&password=" + field.password + "&captchaId=" + field.captchaId + "&captcha=" + field.captcha;
+                var url = "/login/do?username=" + field.username + "&password=" + field.password + "&captchaId=" + field.captchaId + "&captcha=" + field.captcha + "&retUrl="+Request.QueryString("returnUrl");
                 axios.get(url).then(function (response) {
                     if (response.status == 200) {
                         var result = response.data;
-                        msg(result,function() {
+                        console.log(response);
+                        msg(result, function () {
                             location.href = result.data;
                         });
                     }

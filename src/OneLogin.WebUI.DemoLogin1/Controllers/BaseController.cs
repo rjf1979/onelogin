@@ -42,6 +42,10 @@ namespace OneLogin.WebUI.Login.Controllers
                         returnUrl += "?token=" + HttpUtility.UrlEncode(accessToken);
                     }
                 }
+                else
+                {
+                    returnUrl = "/";
+                }
             }
             else
             {

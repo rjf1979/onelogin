@@ -58,7 +58,7 @@
         public string ResultCode { get; set; }
         public T Data { get; set; }
 
-        public static ExecuteResult<T> Ok(T data, string message = "", string resultCode = "")
+        public static ExecuteResult<T> Ok(T data, string message = "操作成功", string resultCode = "")
         {
             return new ExecuteResult<T>
             {

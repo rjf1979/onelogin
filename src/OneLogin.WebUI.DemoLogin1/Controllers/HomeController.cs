@@ -15,11 +15,13 @@ namespace OneLogin.WebUI.Login.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(string returnUrl)
+        public IActionResult Index(string returnUrl="")
         {
             var token = GetClaimValue(nameof(ResponseTokenModel.AccessToken));
             if (string.IsNullOrEmpty(token))
             {
+                if (string.IsNullOrEmpty(returnUrl))
+                    return Redirect("/login");
                 return Redirect("/login?returnUrl=" + HttpUtility.UrlEncode(returnUrl));
             }
             return View();

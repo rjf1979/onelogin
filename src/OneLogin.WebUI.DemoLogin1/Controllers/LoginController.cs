@@ -74,7 +74,7 @@ namespace OneLogin.WebUI.Login.Controllers
             //读取所在用户组授权信息
             var expiredTime = DateTime.Now.AddHours(20);
             //获取token
-            RequestTokenModel requestTokenModel = new RequestTokenModel
+            var requestTokenModel = new RequestTokenModel
             {
                 UserInfo = new RequestUserModel
                 {
@@ -102,7 +102,7 @@ namespace OneLogin.WebUI.Login.Controllers
                     ExpiresUtc = new DateTimeOffset(expiredTime)
                 });
                 var redirectUrl = GetRedirectUriWithAddToken(retUrl, jwtTokenResponse.AccessToken);
-                return Ok(ExecuteResult.Ok(redirectUrl));
+                return Ok(ExecuteResult<string>.Ok(redirectUrl,"登录成功"));
             }
             return Ok(ExecuteResult.Error("登录失败"));
         }

@@ -1,12 +1,19 @@
-﻿msg = function (result, okCallFun, time = 1000) {
-    if (result.IsError) {
+﻿Request = {
+    QueryString: function (item) {
+        var val = location.search.match(new RegExp("[\?\&]" + item + "=([^\&]*)(\&?)", "i"));
+        return val ? val[1] : val;
+    }
+}
+
+msg = function (result, okCallFun, time = 1000) {
+    if (result.isError) {
         if (result.reloadCode === "403") {
             msgFail("无权操作", null, time);
         } else {
-            msgFail(result.Message, null, time);
+            msgFail(result.message, null, time);
         }
     } else {
-        msgOk(result.Message, okCallFun, time);
+        msgOk(result.message, okCallFun, time);
     }
 }
 

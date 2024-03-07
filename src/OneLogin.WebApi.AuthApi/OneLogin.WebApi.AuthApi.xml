@@ -16,7 +16,7 @@
             <param name="configuration"></param>
             <param name="jwtService"></param>
         </member>
-        <member name="M:OneLogin.WebApi.AuthApi.Controllers.AuthController.Authorize(OneLogin.Logic.Core.Models.RequestTokenModel)">
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.AuthController.Authorize(OneLogin.Core.Models.RequestTokenModel)">
             <summary>
             授权
             </summary>

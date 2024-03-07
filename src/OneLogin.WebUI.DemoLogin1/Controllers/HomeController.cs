@@ -1,10 +1,12 @@
+using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OneLogin.Core.Models;
 
 namespace OneLogin.WebUI.Login.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -13,8 +15,13 @@ namespace OneLogin.WebUI.Login.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string returnUrl)
         {
+            var token = GetClaimValue(nameof(ResponseTokenModel.AccessToken));
+            if (string.IsNullOrEmpty(token))
+            {
+                return Redirect("/login?returnUrl=" + HttpUtility.UrlEncode(returnUrl));
+            }
             return View();
         }
     }

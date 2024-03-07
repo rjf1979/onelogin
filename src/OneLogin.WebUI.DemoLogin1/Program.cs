@@ -1,4 +1,9 @@
+using OneLogin.WebUI.Login.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//注入登录用户信息
+builder.Services.Configure<LoginUserSettingModel>(builder.Configuration.GetSection("LoginUserSettings"));
 
 //加入session
 var expireHour = 12 + 8;//增加8个时区的小时时间
@@ -8,7 +13,7 @@ builder.Services.AddSession(opt =>
 });
 
 //加入cookie
-var cookieScheme = "OneLogin.kx-code.com";
+var cookieScheme = builder.Configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";
 builder.Services.AddAuthentication(cookieScheme)
     .AddCookie(cookieScheme, opt =>
     {

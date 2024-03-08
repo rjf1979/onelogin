@@ -60,9 +60,9 @@ var requestTokenModel = new RequestTokenModel
 </p>
 <h2>如果技术问题，可加我微信：</h2>
 
-![image](https://github.com/rjf1979/onelogin/blob/main/sources/img/vx.jpg)
+<img src="https://github.com/rjf1979/onelogin/blob/main/sources/img/vx.jpg" width="300" >
 
 <h2>也可以进群，我们一起学习进步</h2>
 
-![image](https://github.com/rjf1979/onelogin/blob/main/sources/img/vxq.jpg)
+<img src="https://github.com/rjf1979/onelogin/blob/main/sources/img/vxq.jpg" width="300" >
 

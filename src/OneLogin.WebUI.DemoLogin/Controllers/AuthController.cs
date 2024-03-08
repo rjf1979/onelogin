@@ -29,7 +29,7 @@ namespace OneLogin.WebUI.DemoLogin.Controllers
         /// <returns></returns>
         public IActionResult Login()
         {
-            var url = $"{_configuration["LoginSettings:LoginDomain"]}/login?returnUrl={HttpUtility.UrlEncode(GetCurrentDomain())}/auth";
+            var url = $"{_configuration["LoginSettings:LoginDomain"]}/login?returnUrl={HttpUtility.UrlEncode(GetCurrentDomain(_configuration))}/auth";
             return Redirect(url);
         }
 

@@ -28,21 +28,9 @@ namespace OneLogin.WebUI.DemoLogin.Controllers
             return userNameClaim.Value;
         }
 
-        protected string GetCurrentDomain()
+        protected string GetCurrentDomain(IConfiguration configuration)
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            if (Request.IsHttps)
-            {
-                stringBuilder.Append("https://");
-            }
-            else
-            {
-                stringBuilder.Append("http://");
-            }
-
-            var uri = Request.Host.ToUriComponent();
-            stringBuilder.Append(uri);
-            return stringBuilder.ToString();
+            return configuration["OwnAddress"] ?? "";
         }
 
         //protected string GetRedirectUriWithAddToken(string returnUrl, string accessToken)

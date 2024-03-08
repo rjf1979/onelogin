@@ -56,5 +56,5 @@ var requestTokenModel = new RequestTokenModel
 </p>
 
 <p>
-  想要自己系统接入统一登录机制的，可参考项目：OneLogin.WebUI.DemoLogin
+  项目：OneLogin.WebApi.AuthApi 注意appsettings.json，里面的配置数据要和统一登录项目一致
 </p>

@@ -4,6 +4,15 @@ OneLogin 使用对接开发教程
 <br />
 ![1709883848932](https://github.com/rjf1979/onelogin/assets/4926981/05a40f3e-e7cd-41c9-95ae-5523efca0601)
 
+<h1>这个项目结构说明</h1>
+<p>
+  <ul>
+    <li>OneLogin.WebApi.AuthApi 发放授权口令的接口，在部署环境中可以配置成内网IP，这样可以防止暴露在外网</li>
+    <li>OneLogin.WebUI.Login 统一登录的主要站点，只负责登录、获取令牌口令和回跳到各个系统平台</li>
+    <li>需接入登录的系统后台，参考项目对接：OneLogin.WebUI.DemoAdmin</li>
+  </ul>
+</p>
+
 <h1>需要调整的几个代码点，如下：</h1>
 <p>
   项目：OneLogin.WebUI.Login   控制器：LoginController.cs 关于自定义用户信息代码
@@ -44,4 +53,8 @@ var requestTokenModel = new RequestTokenModel
     }
 }
   </pre>
+</p>
+
+<p>
+  想要自己系统接入统一登录机制的，可参考项目：OneLogin.WebUI.DemoLogin
 </p>

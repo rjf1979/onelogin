@@ -8,14 +8,14 @@ OneLogin 使用对接开发教程
 <p>
   <ul>
     <li>OneLogin.WebApi.AuthApi 发放授权口令的接口，在部署环境中可以配置成内网IP，这样可以防止暴露在外网</li>
-    <li>OneLogin.WebUI.Login 统一登录的主要站点，只负责登录、获取令牌口令和回跳到各个系统平台</li>
+    <li>OneLogin.WebUI.Login 统一登录的主要站点，只负责登录、获取令牌口令和登录后回跳到各个系统平台</li>
     <li>需接入登录的系统后台，参考项目对接：OneLogin.WebUI.DemoAdmin</li>
   </ul>
 </p>
 
 <h1>需要调整的几个代码点，如下：</h1>
 <p>
-  项目：OneLogin.WebUI.Login   控制器：LoginController.cs 关于自定义用户信息代码
+  项目：OneLogin.WebUI.Login <br />  控制器：LoginController.cs 关于自定义用户信息代码
   <pre>
 //获取token
 var requestTokenModel = new RequestTokenModel
@@ -56,5 +56,11 @@ var requestTokenModel = new RequestTokenModel
 </p>
 
 <p>
-  想要自己系统接入统一登录机制的，可参考项目：OneLogin.WebUI.DemoLogin
+  项目：OneLogin.WebApi.AuthApi 注意appsettings.json，里面的配置数据要和统一登录项目一致
 </p>
+<h2>如果技术问题，可加我微信：</h2>
+![image](https://github.com/rjf1979/onelogin/assets/4926981/0a16c138-2484-4d4d-8c41-8e3a380ea3b8)
+
+<h2>也可以进群，我们一起学习进步</h2>
+![image](https://github.com/rjf1979/onelogin/assets/4926981/3ad59e32-bccd-4bba-b934-ee3ef6224b63)
+

@@ -26,19 +26,19 @@ var requestTokenModel = new RequestTokenModel
 </p>
 
 <p>
-配置文件里，已经注明了那些可以自定义配置填写
+配置文件里，这些可以自定义配置填写
   <pre>
 {
     "LoginSettings": 
     {
-      "CookieScheme": "sso.kx-code.com", //可以自定义CookieScheme
+      "CookieScheme": "sso.kx-code.com",
       "ExpireHour": 12
     },
     "AuthSettings": 
     {
       "AuthApi": "http://api.sso.kx-code.com", //配置授权API地址
-      "Issuer": "onelogin", //可自定义
-      "Audience": "onelogin", //可自定义
+      "Issuer": "onelogin", 
+      "Audience": "onelogin", 
       "SecretKey": "8c98028024b54978a1eda66353f6779c",
       "ExpiredTime": "7200" //单位：秒 
     }

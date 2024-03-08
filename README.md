@@ -6,7 +6,7 @@ OneLogin 使用对接开发教程
 
 <h1>需要调整的几个代码点，如下：</h1>
 <p>
-  控制器：LoginController.cs 关于自定义用户信息代码
+  项目：OneLogin.WebUI.Login   控制器：LoginController.cs 关于自定义用户信息代码
   <pre>
 //获取token
 var requestTokenModel = new RequestTokenModel
@@ -22,5 +22,26 @@ var requestTokenModel = new RequestTokenModel
     Sign = "",
     Timestamp = DateTime.Now.ToTimestamp()
 };
+  </pre>
+</p>
+
+<p>
+配置文件里，已经注明了那些可以自定义配置填写
+  <pre>
+{
+    "LoginSettings": 
+    {
+      "CookieScheme": "sso.kx-code.com", //可以自定义CookieScheme
+      "ExpireHour": 12
+    },
+    "AuthSettings": 
+    {
+      "AuthApi": "http://api.sso.kx-code.com", //配置授权API地址
+      "Issuer": "onelogin", //可自定义
+      "Audience": "onelogin", //可自定义
+      "SecretKey": "8c98028024b54978a1eda66353f6779c",
+      "ExpiredTime": "7200" //单位：秒 
+    }
+}
   </pre>
 </p>

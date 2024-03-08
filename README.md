@@ -7,7 +7,7 @@ OneLogin 使用对接开发教程
 <p>
   控制器：LoginController.cs 关于自定义用户信息代码
   <pre>
-    //获取token
+//获取token
 var requestTokenModel = new RequestTokenModel
 {
     //这里的用户信息，可以自定义再进行扩展，也可以去数据库里读取用户的数据信息

@@ -15,7 +15,7 @@ OneLogin 使用对接开发教程
 
 <h1>需要调整的几个代码点，如下：</h1>
 <p>
-  项目：OneLogin.WebUI.Login   控制器：LoginController.cs 关于自定义用户信息代码
+  项目：OneLogin.WebUI.Login <br />  控制器：LoginController.cs 关于自定义用户信息代码
   <pre>
 //获取token
 var requestTokenModel = new RequestTokenModel

@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using OneLogin.Logic.Core.Interfaces;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using OneLogin.Core.Models;
@@ -30,6 +31,16 @@ namespace OneLogin.Logic.Services
             _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
             _configuration = configuration;
             _logger = logger;
+        }
+
+        public RequestUserModel GetRequestUser(string token)
+        {
+            var jwtToken = _jwtSecurityTokenHandler.ReadJwtToken(token);
+            RequestUserModel requestUser = new RequestUserModel();
+            requestUser.Role = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Role))?.Value;
+            requestUser.Id = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Id))?.Value;
+            requestUser.Name = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Name))?.Value;
+            return requestUser;
         }
 
         /// <summary>

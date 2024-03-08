@@ -1,0 +1,76 @@
+﻿using System.Security.Claims;
+using System.Text;
+using System.Web;
+using Microsoft.AspNetCore.Mvc;
+using OneLogin.Core.Models;
+
+namespace OneLogin.WebUI.DemoLogin.Controllers
+{
+    public abstract class BaseController : Controller
+    {
+        protected ClaimsPrincipal GetClaimsPrincipal(string cookieScheme, string accessToken, RequestUserModel requestUserModel)
+        {
+            var claims = new List<Claim>
+            {
+                new(nameof(requestUserModel.Name), requestUserModel.Name),
+                new(nameof(requestUserModel.Id), requestUserModel.Id),
+                new (nameof(requestUserModel.Role),requestUserModel.Role),
+                new(nameof(ResponseTokenModel.AccessToken), accessToken)
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, cookieScheme);
+            return new ClaimsPrincipal(claimsIdentity);
+        }
+
+        protected string GetClaimValue(string claimType)
+        {
+            var userNameClaim = HttpContext.User.Claims.FirstOrDefault(x => x.Type == claimType);
+            if (userNameClaim == null) return string.Empty;
+            return userNameClaim.Value;
+        }
+
+        protected string GetCurrentDomain()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (Request.IsHttps)
+            {
+                stringBuilder.Append("https://");
+            }
+            else
+            {
+                stringBuilder.Append("http://");
+            }
+
+            var uri = Request.Host.ToUriComponent();
+            stringBuilder.Append(uri);
+            return stringBuilder.ToString();
+        }
+
+        //protected string GetRedirectUriWithAddToken(string returnUrl, string accessToken)
+        //{
+        //    if (!string.IsNullOrEmpty(returnUrl))
+        //    {
+        //        if (returnUrl.StartsWith("http://") || returnUrl.StartsWith("https://"))
+        //        {
+        //            if (returnUrl.IndexOf("?", StringComparison.Ordinal) >= 0)
+        //            {
+        //                returnUrl += "&token=" + HttpUtility.UrlEncode(accessToken);
+        //            }
+        //            else
+        //            {
+        //                returnUrl += "?token=" + HttpUtility.UrlEncode(accessToken);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            returnUrl = "/";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        returnUrl = "/";
+        //    }
+
+        //    return returnUrl;
+        //}
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using OneLogin.Core;
 using OneLogin.Core.Models;
 using OneLogin.Logic.Core.Interfaces;
@@ -65,7 +66,7 @@ namespace OneLogin.WebApi.AuthApi.Controllers
         [Authorize]
         public IActionResult Validate()
         {
-            ////如果需要一些特殊操作，可以自写代码
+            //如果需要一些特殊操作，可以自写代码
             //string token = string.Empty;
             //string authorization = Request.Headers[HeaderNames.Authorization];
             //if (!string.IsNullOrEmpty(authorization))
@@ -77,17 +78,8 @@ namespace OneLogin.WebApi.AuthApi.Controllers
             //        token = authorization["Bearer ".Length..].Trim();
             //    }
             //}
-
-            //if (!string.IsNullOrEmpty(token))
-            //{
-            //    var obj = _memoryCache.Get<ResponseTokenModel>(token);
-            //    if (obj != null)
-            //    {
-            //        return Ok(ExecuteResult<RequestUserModel>.Ok(obj, "验证成功", "200"));
-            //    }
-            //}
-            //return Ok(ExecuteResult<RequestUserModel>.Error("验证失败", "404"));
-
+            ////解密token
+            //var user = _jwtService.GetRequestUser(token);
             return Ok(ExecuteResult.Ok("SUCCESS", "验证成功", "200"));
         }
     }

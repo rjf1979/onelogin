@@ -6,6 +6,7 @@ namespace OneLogin.Logic.Core.Interfaces
 {
     public interface IAccessTokenService:IBaseInjectService
     {
+        RequestUserModel GetRequestUser(string token);
         string Create(RequestUserModel model, DateTime expTime);
     }
 }

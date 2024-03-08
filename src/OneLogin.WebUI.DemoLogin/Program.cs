@@ -1,29 +1,24 @@
-using OneLogin.WebUI.Login.Models;
-
 var builder = WebApplication.CreateBuilder(args);
 
-//注入登录用户信息
-builder.Services.Configure<LoginUserSettingModel>(builder.Configuration.GetSection("LoginUserSettings"));
-
 //加入session
-builder.Services.AddSession();
 
-//加入cookie
+//builder.Services.AddSession(opt =>
+//{
+//    opt.IdleTimeout = TimeSpan.FromHours(expireHour);
+//});
+
+//加入cookie的授权验证
 var expireHour = 12 + 8;//增加8个时区的小时时间
 var cookieScheme = builder.Configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";
 builder.Services.AddAuthentication(cookieScheme)
     .AddCookie(cookieScheme, opt =>
     {
         opt.SlidingExpiration = true;
-        opt.ClaimsIssuer = "";
         opt.ExpireTimeSpan = TimeSpan.FromHours(expireHour);
-        opt.LoginPath = new PathString("/login");
-        opt.LogoutPath = new PathString("/logout");
+        opt.LoginPath = new PathString("/auth/login");
+        opt.LogoutPath = new PathString("/auth/logout");
         opt.AccessDeniedPath = new PathString("/denied");//未授权跳转到页面
     });
-
-//验证码
-builder.Services.AddCaptcha(builder.Configuration);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -31,18 +26,14 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (!app.Environment.IsDevelopment())
-//{
-//    app.UseExceptionHandler("/Home/Error");
-//}
-
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+}
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseSession();
-app.UseCookiePolicy();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

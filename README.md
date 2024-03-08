@@ -59,7 +59,7 @@ var requestTokenModel = new RequestTokenModel
   项目：OneLogin.WebApi.AuthApi 注意appsettings.json，里面的配置数据要和统一登录项目一致
 </p>
 <h2>如果技术问题，可加我微信：</h2>
-![image](https://raw.githubusercontent.com/rjf1979/onelogin/main/sources/img/vx.jpg)
+![image](https://github.com/rjf1979/onelogin/blob/main/sources/img/vx.jpg)
 
 <h2>也可以进群，我们一起学习进步</h2>
 ![image](https://github.com/rjf1979/onelogin/assets/4926981/3ad59e32-bccd-4bba-b934-ee3ef6224b63)

@@ -73,9 +73,11 @@ namespace OneLogin.WebUI.Login.Controllers
 
             //读取所在用户组授权信息
             var expiredTime = DateTime.Now.AddHours(20);
+
             //获取token
             var requestTokenModel = new RequestTokenModel
             {
+                //这里的用户信息，可以自定义再进行扩展，也可以去数据库里读取用户的数据信息
                 UserInfo = new RequestUserModel
                 {
                     Id = username,

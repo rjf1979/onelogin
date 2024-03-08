@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.Logic.Services", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.WebApi.AuthApi", "OneLogin.WebApi.AuthApi\OneLogin.WebApi.AuthApi.csproj", "{F21E710E-07B8-4C22-86BE-8172DB96FC1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLogin.WebUI.DemoLogin", "OneLogin.WebUI.DemoLogin\OneLogin.WebUI.DemoLogin.csproj", "{086F9985-EF44-417A-8A46-247F06792E08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLogin.WebUI.DemoAdmin", "OneLogin.WebUI.DemoLogin\OneLogin.WebUI.DemoAdmin.csproj", "{086F9985-EF44-417A-8A46-247F06792E08}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.WebUI.Login", "OneLogin.WebUI.Login\OneLogin.WebUI.Login.csproj", "{ADEFFD1D-3914-4A74-B8D0-7A1ADD7653F9}"
 EndProject

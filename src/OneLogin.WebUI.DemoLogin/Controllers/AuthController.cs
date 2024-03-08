@@ -1,13 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Web;
-using Flurl.Http;
+﻿using Flurl.Http;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneLogin.Core;
 using OneLogin.Core.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Web;
 
 namespace OneLogin.WebUI.DemoLogin.Controllers
 {

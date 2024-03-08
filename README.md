@@ -8,7 +8,7 @@ OneLogin 使用对接开发教程
 <p>
   <ul>
     <li>OneLogin.WebApi.AuthApi 发放授权口令的接口，在部署环境中可以配置成内网IP，这样可以防止暴露在外网</li>
-    <li>OneLogin.WebUI.Login 统一登录的主要站点，只负责登录、获取令牌口令和回跳到各个系统平台</li>
+    <li>OneLogin.WebUI.Login 统一登录的主要站点，只负责登录、获取令牌口令和登录后回跳到各个系统平台</li>
     <li>需接入登录的系统后台，参考项目对接：OneLogin.WebUI.DemoAdmin</li>
   </ul>
 </p>

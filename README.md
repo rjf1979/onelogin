@@ -33,7 +33,6 @@ var requestTokenModel = new RequestTokenModel
 };
   </pre>
 </p>
-具体我已经在知乎上写了一篇文章，请查阅：https://zhuanlan.zhihu.com/p/686002186
 <p>
 配置文件里，这些可以自定义配置填写
   <pre>
@@ -58,6 +57,9 @@ var requestTokenModel = new RequestTokenModel
 <p>
   项目：OneLogin.WebApi.AuthApi 注意appsettings.json，里面的配置数据要和统一登录项目一致
 </p>
+
+<h3>具体我已经在知乎上写了一篇文章，请查阅：https://zhuanlan.zhihu.com/p/686002186</h3>
+
 <h2>如果技术问题，可加我微信：</h2>
 
 <img src="https://github.com/rjf1979/onelogin/blob/main/sources/img/vx.jpg" width="300" >

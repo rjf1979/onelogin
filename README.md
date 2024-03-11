@@ -33,7 +33,7 @@ var requestTokenModel = new RequestTokenModel
 };
   </pre>
 </p>
-
+具体我已经在知乎上写了一篇文章，请查阅：https://zhuanlan.zhihu.com/p/686002186
 <p>
 配置文件里，这些可以自定义配置填写
   <pre>

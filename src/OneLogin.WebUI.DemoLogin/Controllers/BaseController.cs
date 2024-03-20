@@ -1,10 +1,8 @@
 ﻿using System.Security.Claims;
-using System.Text;
-using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using OneLogin.Core.Models;
 
-namespace OneLogin.WebUI.DemoLogin.Controllers
+namespace OneLogin.WebUI.DemoAdmin.Controllers
 {
     public abstract class BaseController : Controller
     {
@@ -32,33 +30,5 @@ namespace OneLogin.WebUI.DemoLogin.Controllers
         {
             return configuration["OwnAddress"] ?? "";
         }
-
-        //protected string GetRedirectUriWithAddToken(string returnUrl, string accessToken)
-        //{
-        //    if (!string.IsNullOrEmpty(returnUrl))
-        //    {
-        //        if (returnUrl.StartsWith("http://") || returnUrl.StartsWith("https://"))
-        //        {
-        //            if (returnUrl.IndexOf("?", StringComparison.Ordinal) >= 0)
-        //            {
-        //                returnUrl += "&token=" + HttpUtility.UrlEncode(accessToken);
-        //            }
-        //            else
-        //            {
-        //                returnUrl += "?token=" + HttpUtility.UrlEncode(accessToken);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            returnUrl = "/";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        returnUrl = "/";
-        //    }
-
-        //    return returnUrl;
-        //}
     }
 }

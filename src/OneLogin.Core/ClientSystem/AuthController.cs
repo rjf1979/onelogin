@@ -1,13 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System;
+using System.Threading.Tasks;
 using System.Web;
-using Flurl.Http;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OneLogin.Core;
+using Microsoft.Extensions.Configuration;
 using OneLogin.Core.Models;
 
-namespace OneLogin.WebUI.DemoAdmin.Controllers
+namespace OneLogin.Core.ClientSystem
 {
     [AllowAnonymous]
     public class AuthController : BaseController

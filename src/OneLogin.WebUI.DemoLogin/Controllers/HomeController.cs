@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneLogin.Core.Models;
 
-namespace OneLogin.WebUI.DemoLogin.Controllers
+namespace OneLogin.WebUI.DemoAdmin.Controllers
 {
     [Authorize]
     public class HomeController : BaseController

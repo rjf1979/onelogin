@@ -1,12 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-//加入session
-
-//builder.Services.AddSession(opt =>
-//{
-//    opt.IdleTimeout = TimeSpan.FromHours(expireHour);
-//});
-
 //加入cookie的授权验证
 var expireHour = 12 + 8;//增加8个时区的小时时间
 var cookieScheme = builder.Configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";

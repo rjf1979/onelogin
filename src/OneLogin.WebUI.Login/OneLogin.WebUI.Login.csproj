@@ -33,8 +33,4 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OneLogin.Core\OneLogin.Core.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OneLogin.Core\OneLogin.Core.csproj" />
     <ProjectReference Include="..\OneLogin.Domains\OneLogin.Logic.Core.csproj" />
     <ProjectReference Include="..\OneLogin.LogicServices\OneLogin.Logic.Services.csproj" />
   </ItemGroup>

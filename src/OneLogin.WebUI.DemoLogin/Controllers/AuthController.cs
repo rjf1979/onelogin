@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneLogin.Core;
 using OneLogin.Core.Models;
+using AuthenticationService = OneLogin.Core.AuthenticationService;
 
 namespace OneLogin.WebUI.DemoAdmin.Controllers
 {
@@ -14,10 +15,12 @@ namespace OneLogin.WebUI.DemoAdmin.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly string _cookieScheme;
+        private readonly AuthenticationService _authenticationService;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, AuthenticationService authenticationService)
         {
             _configuration = configuration;
+            _authenticationService = authenticationService;
             _cookieScheme = _configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";
         }
 
@@ -27,8 +30,9 @@ namespace OneLogin.WebUI.DemoAdmin.Controllers
         /// <returns></returns>
         public IActionResult Login()
         {
-            var url = $"{_configuration["LoginSettings:LoginDomain"]}/login?returnUrl={HttpUtility.UrlEncode(GetCurrentDomain(_configuration))}/auth";
-            return Redirect(url);
+            //var url = $"{_configuration["LoginSettings:LoginDomain"]}/login?returnUrl={HttpUtility.UrlEncode(GetCurrentDomain(_configuration))}/auth";
+            //return Redirect(url);
+            return _authenticationService.In()
         }
 
         private RequestUserModel GetRequestUser(string token)

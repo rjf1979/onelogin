@@ -15,7 +15,7 @@ namespace OneLogin.Core
 {
     public class AuthenticationService
     {
-        private LoginSettings _loginSettings;
+        private readonly LoginSettings _loginSettings;
 
         public AuthenticationService(IOptions<LoginSettings> loginSettingsOptions)
         {

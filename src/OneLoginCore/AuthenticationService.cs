@@ -17,6 +17,7 @@ namespace OneLogin.Core
     {
         private readonly LoginSettings _loginSettings;
 
+
         public AuthenticationService(IOptions<LoginSettings> loginSettingsOptions)
         {
             _loginSettings = loginSettingsOptions.Value;
@@ -55,11 +56,11 @@ namespace OneLogin.Core
             return new ClaimsPrincipal(claimsIdentity);
         }
 
-        public async Task<IActionResult> Index(HttpContext context, string cookieScheme,string authenticationApi, string token)
+        public async Task<IActionResult> Validate(HttpContext context, string token)
         {
             if (!string.IsNullOrEmpty(token))
             {
-                var url = $"{authenticationApi}/api/Auth/Validate";
+                var url = $"{_loginSettings.AuthApi}/api/Auth/Validate";
                 var response = await url.WithOAuthBearerToken(token).GetAsync();
                 var executeResult = await response.GetJsonAsync<ExecuteResult>();
                 if (executeResult.IsError) return new ForbidResult();
@@ -68,12 +69,12 @@ namespace OneLogin.Core
                 var userInfo = GetRequestUser(token);
 
                 //读取所在用户组授权信息
-                var expiredTime = DateTime.Now.AddHours(20);
+                var expiredTime = DateTime.Now.AddSeconds(_loginSettings.ExpiredTime);
 
                 //生成登录信息
-                var claimsPrincipal = GetClaimsPrincipal(cookieScheme,token, userInfo);
+                var claimsPrincipal = GetClaimsPrincipal(_loginSettings.CookieScheme,token, userInfo);
                 //记录登录
-                await context.SignInAsync(cookieScheme, claimsPrincipal, new AuthenticationProperties
+                await context.SignInAsync(_loginSettings.CookieScheme, claimsPrincipal, new AuthenticationProperties
                 {
                     IsPersistent = true,//在浏览器持久化，false的时候走session持久化
                     ExpiresUtc = new DateTimeOffset(expiredTime)

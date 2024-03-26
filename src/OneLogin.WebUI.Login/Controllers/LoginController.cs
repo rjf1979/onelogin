@@ -15,17 +15,17 @@ namespace OneLogin.WebUI.Login.Controllers
     {
         private readonly ICaptcha _captcha;
         private readonly ILogger<LoginController> _logger;
-        private readonly LoginUserSettingModel _loginUserSetting;
+        private readonly DemoUserSettingModel _loginUserSetting;
         private readonly IConfiguration _configuration;
-        private readonly string _cookieScheme;
+        private readonly LoginSettings _loginSettings;
 
-        public LoginController(ILogger<LoginController> logger, IOptions<LoginUserSettingModel> options, ICaptcha captcha, IConfiguration configuration)
+        public LoginController(ILogger<LoginController> logger, IOptions<LoginSettings> loginSettingOptions, IOptions<DemoUserSettingModel> options, ICaptcha captcha, IConfiguration configuration)
         {
             _logger = logger;
             _captcha = captcha;
             _configuration = configuration;
             _loginUserSetting = options.Value;
-            _cookieScheme = _configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";
+            _loginSettings = loginSettingOptions.Value;
         }
 
         public IActionResult Index(string returnUrl = "")
@@ -58,7 +58,7 @@ namespace OneLogin.WebUI.Login.Controllers
             }
         }
 
-        public async Task<IActionResult> Do([FromQuery] string username, [FromQuery] string password, [FromQuery] string captchaId, [FromQuery] string captcha, [FromQuery]string retUrl)
+        public async Task<IActionResult> Do([FromQuery] string username, [FromQuery] string password, [FromQuery] string captchaId, [FromQuery] string captcha, [FromQuery] string retUrl)
         {
             if (!_captcha.Validate(captchaId, captcha))
             {
@@ -72,7 +72,7 @@ namespace OneLogin.WebUI.Login.Controllers
             }
 
             //读取所在用户组授权信息
-            var expiredTime = DateTime.Now.AddHours(20);
+            var expiredTime = DateTime.Now.AddSeconds(_loginSettings.ExpiredTime);
 
             //获取token
             var requestTokenModel = new RequestTokenModel
@@ -96,19 +96,17 @@ namespace OneLogin.WebUI.Login.Controllers
             if (!string.IsNullOrEmpty(jwtTokenResponse.AccessToken))
             {
                 //生成登录信息
-                var claimsPrincipal = GetClaimsPrincipal(_cookieScheme, jwtTokenResponse.AccessToken, requestTokenModel.UserInfo);
+                var claimsPrincipal = GetClaimsPrincipal(_loginSettings.CookieScheme, jwtTokenResponse.AccessToken, requestTokenModel.UserInfo);
                 //登录
-                await HttpContext.SignInAsync(_cookieScheme, claimsPrincipal, new AuthenticationProperties
+                await HttpContext.SignInAsync(_loginSettings.CookieScheme, claimsPrincipal, new AuthenticationProperties
                 {
                     IsPersistent = true,//在浏览器持久化，false的时候走session持久化
                     ExpiresUtc = new DateTimeOffset(expiredTime)
                 });
                 var redirectUrl = GetRedirectUriWithAddToken(retUrl, jwtTokenResponse.AccessToken);
-                return Ok(ExecuteResult<string>.Ok(redirectUrl,"登录成功"));
+                return Ok(ExecuteResult<string>.Ok(redirectUrl, "登录成功"));
             }
             return Ok(ExecuteResult.Error("登录失败"));
         }
-
-
     }
 }

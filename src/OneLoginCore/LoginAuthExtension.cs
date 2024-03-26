@@ -9,7 +9,6 @@ namespace OneLogin.Core
     {
         public static void AddOneLoginAuthentication(this WebApplicationBuilder builder, string cookieScheme,string loginPath,string logoutPath,string deniedPath, int expireSecond)
         {
-            builder.Services.Configure<AuthenticationSettings>(builder.Configuration.GetSection(nameof(AuthenticationSettings)));
             builder.Services.Configure<LoginSettings>(builder.Configuration.GetSection(nameof(LoginSettings)));
             //
             builder.Services.AddAuthentication(cookieScheme)

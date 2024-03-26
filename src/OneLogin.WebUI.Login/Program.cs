@@ -1,26 +1,18 @@
+using OneLogin.Core;
 using OneLogin.WebUI.Login.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //注入登录用户信息
-builder.Services.Configure<LoginUserSettingModel>(builder.Configuration.GetSection("LoginUserSettings"));
+builder.Services.Configure<DemoUserSettingModel>(builder.Configuration.GetSection("LoginUserSettings"));
 
 //加入session
 builder.Services.AddSession();
 
 //加入cookie
-var expireHour = 12 + 8;//增加8个时区的小时时间
+var expireTime = int.Parse(builder.Configuration["LoginSettings:ExpiredTime"] ?? "7200");
 var cookieScheme = builder.Configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";
-builder.Services.AddAuthentication(cookieScheme)
-    .AddCookie(cookieScheme, opt =>
-    {
-        opt.SlidingExpiration = true;
-        opt.ClaimsIssuer = "";
-        opt.ExpireTimeSpan = TimeSpan.FromHours(expireHour);
-        opt.LoginPath = new PathString("/login");
-        opt.LogoutPath = new PathString("/logout");
-        opt.AccessDeniedPath = new PathString("/denied");//未授权跳转到页面
-    });
+builder.AddOneLoginAuthentication(cookieScheme, "/auth/login", "/auth/logout", "/denied", expireTime);
 
 //验证码
 builder.Services.AddCaptcha(builder.Configuration);

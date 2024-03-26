@@ -2,7 +2,7 @@
 
 namespace OneLogin.Core
 {
-    internal static class DateTimeExtension
+    public static class DateTimeExtension
     {
         /// <summary>
         /// 从1970开始算起的时间戳，单位秒

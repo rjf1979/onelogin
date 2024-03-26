@@ -15,16 +15,16 @@ namespace OneLogin.WebUI.Login.Controllers
     {
         private readonly ICaptcha _captcha;
         private readonly ILogger<LoginController> _logger;
-        private readonly DemoUserSettingModel _loginUserSetting;
-        private readonly IConfiguration _configuration;
+        private readonly ILoginUserService _loginUserService;
+        private readonly string _secretKey;
         private readonly LoginSettings _loginSettings;
 
-        public LoginController(ILogger<LoginController> logger, IOptions<LoginSettings> loginSettingOptions, IOptions<DemoUserSettingModel> options, ICaptcha captcha, IConfiguration configuration)
+        public LoginController(ILogger<LoginController> logger, IOptions<LoginSettings> loginSettingOptions, ICaptcha captcha, IConfiguration configuration, ILoginUserService loginUserService)
         {
             _logger = logger;
             _captcha = captcha;
-            _configuration = configuration;
-            _loginUserSetting = options.Value;
+            _loginUserService = loginUserService;
+            _secretKey = configuration["AuthSettings:SecretKey"];
             _loginSettings = loginSettingOptions.Value;
         }
 
@@ -66,7 +66,8 @@ namespace OneLogin.WebUI.Login.Controllers
             }
 
             //登陆
-            if (_loginUserSetting.UserList.FirstOrDefault(a => a.Username == username && a.Password == password) == null)
+            var validateResult = await _loginUserService.ValidateAsync(username, password);
+            if (validateResult.IsError)
             {
                 return Ok(ExecuteResult.Error("登录失败"));
             }
@@ -89,8 +90,8 @@ namespace OneLogin.WebUI.Login.Controllers
                 Timestamp = DateTime.Now.ToTimestamp()
             };
 
-            requestTokenModel.BuildSign(_configuration["AuthSettings:SecretKey"]);
-            var url = $"{_configuration["AuthSettings:AuthApi"]}/api/Auth/Authorize";
+            requestTokenModel.BuildSign(_secretKey);
+            var url = $"{_loginSettings.AuthApi}/api/Auth/Authorize";
             var response = await url.PostJsonAsync(requestTokenModel);
             var jwtTokenResponse = await response.GetJsonAsync<ResponseTokenModel>();
             if (!string.IsNullOrEmpty(jwtTokenResponse.AccessToken))

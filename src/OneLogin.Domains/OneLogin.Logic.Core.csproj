@@ -15,4 +15,8 @@
     <Compile Remove="Interfaces\IMenuDomainService.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OneLoginCore\OneLogin.Core.csproj" />
+  </ItemGroup>
+
 </Project>

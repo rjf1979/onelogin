@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 var expireTime = int.Parse(builder.Configuration["LoginSettings:ExpiredTime"] ?? "7200");
 var cookieScheme = builder.Configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";
 builder.AddOneLoginAuthentication(cookieScheme, "/auth/login", "/auth/logout", "/denied", expireTime);
-builder.Services.AddScoped<AuthenticationService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

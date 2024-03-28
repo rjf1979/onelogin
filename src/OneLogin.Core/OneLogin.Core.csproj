@@ -5,13 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DistributionSettings.cs" />
-    <Compile Remove="LoginAuthExtension.cs" />
-    <Compile Remove="SimpleModel.cs" />
-    <Compile Remove="SugarCacheService.cs" />
-    <Compile Remove="UpImageSettings.cs" />
-    <Compile Remove="UserClaimKeys.cs" />
+    <Compile Remove="AuthenticationSettings.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="4.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
 
 </Project>

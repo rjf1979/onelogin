@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.WebUI.DemoAdmin", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OneLogin.WebUI.Login", "OneLogin.WebUI.Login\OneLogin.WebUI.Login.csproj", "{ADEFFD1D-3914-4A74-B8D0-7A1ADD7653F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLogin.Core", "OneLoginCore\OneLogin.Core.csproj", "{0385B55F-6637-4DB7-ADB6-C05611506884}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneLogin.Core", "OneLogin.Core\OneLogin.Core.csproj", "{0385B55F-6637-4DB7-ADB6-C05611506884}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

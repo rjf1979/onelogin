@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace OneLogin.Core.Models
@@ -13,21 +12,18 @@ namespace OneLogin.Core.Models
         /// 返回消息
         /// </summary>
         [JsonProperty("message")]
-        [JsonPropertyName("message")]
         public string Message { get; set; }
 
         /// <summary>
         /// 时间戳，秒计算
         /// </summary>
         [JsonProperty("exp_time")]
-        [JsonPropertyName("exp_time")]
         public string ExpireTime { get; set; }
 
         /// <summary>
         /// 返回的Token
         /// </summary>
         [JsonProperty("access_token")]
-        [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
         public static ResponseTokenModel Fail(string msg)

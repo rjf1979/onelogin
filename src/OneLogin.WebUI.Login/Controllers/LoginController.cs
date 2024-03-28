@@ -91,7 +91,7 @@ namespace OneLogin.WebUI.Login.Controllers
             };
 
             requestTokenModel.BuildSign(_secretKey);
-            var url = $"{_loginSettings.AuthApi}/api/Auth/Authorize";
+            var url = $"{_loginSettings.AuthApiUrl}/api/Auth/Authorize";
             var response = await url.PostJsonAsync(requestTokenModel);
             var jwtTokenResponse = await response.GetJsonAsync<ResponseTokenModel>();
             if (!string.IsNullOrEmpty(jwtTokenResponse.AccessToken))

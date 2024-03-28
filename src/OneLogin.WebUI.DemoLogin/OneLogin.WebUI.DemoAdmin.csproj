@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OneLoginCore\OneLogin.Core.csproj" />
+    <ProjectReference Include="..\OneLogin.Core\OneLogin.Core.csproj" />
   </ItemGroup>
 
 </Project>

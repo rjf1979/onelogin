@@ -17,7 +17,6 @@ namespace OneLogin.Core
     {
         private readonly LoginSettings _loginSettings;
 
-
         public AuthenticationService(IOptions<LoginSettings> loginSettingsOptions)
         {
             _loginSettings = loginSettingsOptions.Value;
@@ -29,7 +28,7 @@ namespace OneLogin.Core
         /// <returns></returns>
         public IActionResult In()
         {
-            var url = $"{_loginSettings.LoginDomain}/login?returnUrl={_loginSettings.ReturnUrl}/auth";
+            var url = $"{_loginSettings.LoginWebUrl}/login?returnUrl={_loginSettings.ReturnUrl}/auth";
             return new RedirectResult(url);
         }
 
@@ -60,7 +59,7 @@ namespace OneLogin.Core
         {
             if (!string.IsNullOrEmpty(token))
             {
-                var url = $"{_loginSettings.AuthApi}/api/Auth/Validate";
+                var url = $"{_loginSettings.AuthApiUrl}/api/Auth/Validate";
                 var response = await url.WithOAuthBearerToken(token).GetAsync();
                 var executeResult = await response.GetJsonAsync<ExecuteResult>();
                 if (executeResult.IsError) return new ForbidResult();

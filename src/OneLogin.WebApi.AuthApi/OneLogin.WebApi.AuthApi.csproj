@@ -28,16 +28,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
     <PackageReference Include="NETCore.Encrypt" Version="2.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OneLogin.Domains\OneLogin.Logic.Core.csproj" />
-    <ProjectReference Include="..\OneLogin.LogicServices\OneLogin.Logic.Services.csproj" />
-    <ProjectReference Include="..\OneLoginCore\OneLogin.Core.csproj" />
+    <ProjectReference Include="..\OneLogin.Core\OneLogin.Core.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

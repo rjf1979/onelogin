@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OneLogin.Domains\OneLogin.Logic.Core.csproj" />
+    <ProjectReference Include="..\OneLogin.Core\OneLogin.Core.csproj" />
     <ProjectReference Include="..\OneLoginCore\OneLogin.Core.csproj" />
   </ItemGroup>
 

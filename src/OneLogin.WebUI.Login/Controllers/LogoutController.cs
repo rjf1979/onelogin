@@ -31,6 +31,14 @@ namespace OneLogin.WebUI.Login.Controllers
             return Ok(ExecuteResult.Ok("退出成功"));
         }
 
+        public async Task<IActionResult> Auto(string returnUrl = "")
+        {
+            await HttpContext.SignOutAsync();
+            if (string.IsNullOrEmpty(returnUrl))
+                return Redirect("/login");
+            return Redirect("/login?returnUrl=" + HttpUtility.UrlEncode(returnUrl));
+        }
+
         public IActionResult Go(string returnUrl)
         {
             return Redirect(returnUrl);

@@ -13,7 +13,7 @@ namespace OneLogin.WebUI.Login.Controllers
             {
                 new(nameof(requestUserModel.Name), requestUserModel.Name),
                 new(nameof(requestUserModel.Id), requestUserModel.Id),
-                new (nameof(requestUserModel.Role),requestUserModel.Role),
+                //new (nameof(requestUserModel.Role),requestUserModel.Role),
                 new(nameof(ResponseTokenModel.AccessToken), accessToken)
             };
             var claimsIdentity = new ClaimsIdentity(claims, cookieScheme);

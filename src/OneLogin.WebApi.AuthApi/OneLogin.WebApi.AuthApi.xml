@@ -9,7 +9,7 @@
             Jwt授权服务
             </summary>
         </member>
-        <member name="M:OneLogin.WebApi.AuthApi.Controllers.AuthController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,OneLogin.Logic.Core.Interfaces.IAccessTokenService)">
+        <member name="M:OneLogin.WebApi.AuthApi.Controllers.AuthController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,OneLogin.WebApi.AuthApi.Services.IAccessTokenService)">
             <summary>
             jwt服务
             </summary>
@@ -27,6 +27,40 @@
             <summary>
             验证，需要在header里加入授权token
             </summary>
+            <returns></returns>
+        </member>
+        <member name="T:OneLogin.WebApi.AuthApi.Services.AccessTokenService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:OneLogin.WebApi.AuthApi.Services.AccessTokenService.#ctor(System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{OneLogin.WebApi.AuthApi.Services.AccessTokenService})">
+            <summary>
+            
+            </summary>
+            <param name="jwtSecurityTokenHandler"></param>
+            <param name="configuration"></param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:OneLogin.WebApi.AuthApi.Services.AccessTokenService.Create(OneLogin.Core.Models.RequestUserModel,System.DateTime)">
+            <summary>
+            
+            </summary>
+            <param name="model"></param>
+            <param name="expTime"></param>
+            <returns></returns>
+        </member>
+        <member name="T:OneLogin.WebApi.AuthApi.Services.IAccessTokenService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:OneLogin.WebApi.AuthApi.Services.IAccessTokenService.Create(OneLogin.Core.Models.RequestUserModel,System.DateTime)">
+            <summary>
+            
+            </summary>
+            <param name="model"></param>
+            <param name="expTime"></param>
             <returns></returns>
         </member>
     </members>

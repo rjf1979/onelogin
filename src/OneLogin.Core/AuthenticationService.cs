@@ -13,12 +13,22 @@ using OneLogin.Core.Models;
 
 namespace OneLogin.Core
 {
-    public class AuthenticationService
+    public interface IAuthenticationService
+    {
+        IActionResult In();
+        RequestUserModel GetRequestUser(string token);
+        Task<IActionResult> Validate(HttpContext context, string token);
+        Task<IActionResult> Out(HttpContext context);
+    }
+
+    public class AuthenticationService: IAuthenticationService
     {
         private readonly LoginSettings _loginSettings;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
-        public AuthenticationService(IOptions<LoginSettings> loginSettingsOptions)
+        public AuthenticationService(IOptions<LoginSettings> loginSettingsOptions, JwtSecurityTokenHandler jwtSecurityTokenHandler)
         {
+            _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
             _loginSettings = loginSettingsOptions.Value;
         }
 
@@ -32,15 +42,24 @@ namespace OneLogin.Core
             return new RedirectResult(url);
         }
 
-        private RequestUserModel GetRequestUser(string token)
+        public RequestUserModel GetRequestUser(string token)
         {
-            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var jwtToken = _jwtSecurityTokenHandler.ReadJwtToken(token);
             var requestUser = new RequestUserModel();
-            requestUser.Role = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Role))?.Value;
             requestUser.Id = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Id))?.Value;
             requestUser.Name = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Name))?.Value;
             return requestUser;
         }
+
+        //public RequestUserModel GetRequestUser(string token)
+        //{
+        //    var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+        //    var requestUser = new RequestUserModel();
+        //    //requestUser.Role = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Role))?.Value;
+        //    requestUser.Id = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Id))?.Value;
+        //    requestUser.Name = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Name))?.Value;
+        //    return requestUser;
+        //}
 
         private ClaimsPrincipal GetClaimsPrincipal(string cookieScheme, string accessToken, RequestUserModel requestUserModel)
         {
@@ -48,7 +67,7 @@ namespace OneLogin.Core
             {
                 new(nameof(requestUserModel.Name), requestUserModel.Name),
                 new(nameof(requestUserModel.Id), requestUserModel.Id),
-                new (nameof(requestUserModel.Role),requestUserModel.Role),
+                //new (nameof(requestUserModel.Role),requestUserModel.Role),
                 new(nameof(ResponseTokenModel.AccessToken), accessToken)
             };
             var claimsIdentity = new ClaimsIdentity(claims, cookieScheme);
@@ -60,9 +79,20 @@ namespace OneLogin.Core
             if (!string.IsNullOrEmpty(token))
             {
                 var url = $"{_loginSettings.AuthApiUrl}/api/Auth/Validate";
-                var response = await url.WithOAuthBearerToken(token).GetAsync();
-                var executeResult = await response.GetJsonAsync<ExecuteResult>();
-                if (executeResult.IsError) return new ForbidResult();
+                try
+                {
+                    var response = await url.WithOAuthBearerToken(token).GetAsync();
+                    var executeResult = await response.GetJsonAsync<ExecuteResult>();
+                    if (executeResult.IsError) return new ForbidResult();
+                }
+                catch (FlurlHttpException flurlHttpException)
+                {
+                    if (flurlHttpException.StatusCode == 401)
+                    {
+                        //未授权的token，跳转到登录页面
+                        return await Out(context);
+                    }
+                }
 
                 //获取登录者信息
                 var userInfo = GetRequestUser(token);
@@ -87,7 +117,7 @@ namespace OneLogin.Core
         public async Task<IActionResult> Out(HttpContext context)
         {
             await context.SignOutAsync();
-            return new RedirectResult("/auth/in");
+            return In();
         }
     }
 }

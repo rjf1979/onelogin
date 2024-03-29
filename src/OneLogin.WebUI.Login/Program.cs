@@ -1,21 +1,19 @@
 using OneLogin.Core;
-using OneLogin.WebUI.Login.Models;
+using OneLogin.WebUI.Login.CommServices;
 
 var builder = WebApplication.CreateBuilder(args);
-
-//注入登录用户信息
-builder.Services.Configure<DemoUserSettingModel>(builder.Configuration.GetSection("LoginUserSettings"));
 
 //加入session
 builder.Services.AddSession();
 
 //加入cookie
-var expireTime = int.Parse(builder.Configuration["LoginSettings:ExpiredTime"] ?? "7200");
-var cookieScheme = builder.Configuration["LoginSettings:CookieScheme"] ?? "sso.kx-code.com";
-builder.AddOneLoginAuthentication(cookieScheme, "/auth/login", "/auth/logout", "/denied", expireTime);
+builder.AddOneLoginAuthentication();
 
 //验证码
 builder.Services.AddCaptcha(builder.Configuration);
+
+//注入用户验证服务
+builder.Services.AddScoped<ILoginUserService,LoginUserService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

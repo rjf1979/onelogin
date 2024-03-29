@@ -24,7 +24,7 @@ namespace OneLogin.WebUI.Login.Controllers
             _logger = logger;
             _captcha = captcha;
             _loginUserService = loginUserService;
-            _secretKey = configuration["AuthSettings:SecretKey"];
+            _secretKey = configuration["AuthSecretKey"];
             _loginSettings = loginSettingOptions.Value;
         }
 
@@ -82,7 +82,7 @@ namespace OneLogin.WebUI.Login.Controllers
                 UserInfo = new RequestUserModel
                 {
                     Id = username,
-                    Role = "user",
+                    //Role = "user",
                     Name = username
                 },
                 Nonce = Guid.NewGuid().ToString("N"),
@@ -92,6 +92,7 @@ namespace OneLogin.WebUI.Login.Controllers
 
             requestTokenModel.BuildSign(_secretKey);
             var url = $"{_loginSettings.AuthApiUrl}/api/Auth/Authorize";
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestTokenModel);
             var response = await url.PostJsonAsync(requestTokenModel);
             var jwtTokenResponse = await response.GetJsonAsync<ResponseTokenModel>();
             if (!string.IsNullOrEmpty(jwtTokenResponse.AccessToken))

@@ -4,9 +4,8 @@ using Microsoft.OpenApi.Models;
 using NLog.Web;
 using System.Reflection;
 using System.Text;
-using OneLogin.Logic.Core.Interfaces;
-using OneLogin.Logic.Services;
 using System.IdentityModel.Tokens.Jwt;
+using OneLogin.WebApi.AuthApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(configure =>
@@ -22,7 +21,6 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(o =>
 {
     o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 }));
-
 builder.Services.AddScoped<IAccessTokenService, AccessTokenService>();
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 

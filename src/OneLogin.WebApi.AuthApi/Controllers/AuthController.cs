@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OneLogin.Core;
 using OneLogin.Core.Models;
-using OneLogin.Logic.Core.Interfaces;
+using OneLogin.WebApi.AuthApi.Services;
 
 namespace OneLogin.WebApi.AuthApi.Controllers
 {

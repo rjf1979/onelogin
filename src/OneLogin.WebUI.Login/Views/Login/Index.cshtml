@@ -71,6 +71,7 @@
     <script src="~/lib/layui-v2.9.7/layui/layui.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/axios/dist/axios.min.js"></script>
+    <script src="~/lib/md5/md5.min.js"></script>
     <script src="~/js/common.js"></script>
     <script>
 
@@ -84,7 +85,7 @@
             // 提交事件
             form.on('submit(demo-login)', function (data) {
                 var field = data.field; // 获取表单字段值
-                var url = "/login/do?username=" + field.username + "&password=" + field.password + "&captchaId=" + field.captchaId + "&captcha=" + field.captcha + "&retUrl="+Request.QueryString("returnUrl");
+                var url = "/login/do?username=" + field.username + "&password=" + md5(field.password) + "&captchaId=" + field.captchaId + "&captcha=" + field.captcha + "&retUrl=" + Request.QueryString("returnUrl");
                 axios.get(url).then(function (response) {
                     if (response.status == 200) {
                         var result = response.data;

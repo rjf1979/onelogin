@@ -51,23 +51,12 @@ namespace OneLogin.Core
             return requestUser;
         }
 
-        //public RequestUserModel GetRequestUser(string token)
-        //{
-        //    var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-        //    var requestUser = new RequestUserModel();
-        //    //requestUser.Role = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Role))?.Value;
-        //    requestUser.Id = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Id))?.Value;
-        //    requestUser.Name = jwtToken.Claims.FirstOrDefault(a => a.Type == nameof(requestUser.Name))?.Value;
-        //    return requestUser;
-        //}
-
         private ClaimsPrincipal GetClaimsPrincipal(string cookieScheme, string accessToken, RequestUserModel requestUserModel)
         {
             var claims = new List<Claim>
             {
                 new(nameof(requestUserModel.Name), requestUserModel.Name),
                 new(nameof(requestUserModel.Id), requestUserModel.Id),
-                //new (nameof(requestUserModel.Role),requestUserModel.Role),
                 new(nameof(ResponseTokenModel.AccessToken), accessToken)
             };
             var claimsIdentity = new ClaimsIdentity(claims, cookieScheme);

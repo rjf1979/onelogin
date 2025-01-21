@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OneLogin.Core;
 using OneLogin.Core.Models;
-using OneLogin.WebUI.Login.Models;
 
 namespace OneLogin.WebUI.Login.Controllers
 {

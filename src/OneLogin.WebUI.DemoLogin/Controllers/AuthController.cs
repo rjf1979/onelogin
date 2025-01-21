@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AuthenticationService = OneLogin.Core.AuthenticationService;
+using OneLogin.Core;
 
 namespace OneLogin.WebUI.DemoAdmin.Controllers
 {
     [AllowAnonymous]
     public class AuthController : BaseController
     {
-        private readonly AuthenticationService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="authenticationService"></param>
-        public AuthController(AuthenticationService authenticationService)
+        public AuthController(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
         }
@@ -32,7 +32,7 @@ namespace OneLogin.WebUI.DemoAdmin.Controllers
             return await _authenticationService.Validate(Request.HttpContext, token);
         }
 
-        public async Task<IActionResult> Out()
+        public async Task<IActionResult> Logout()
         {
             return await _authenticationService.Out(Request.HttpContext);
         }
